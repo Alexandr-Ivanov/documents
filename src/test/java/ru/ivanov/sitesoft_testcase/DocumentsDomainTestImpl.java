@@ -1,8 +1,9 @@
 /**
  * Тестовое задание от sitesoft для Java
  */
-package ru.ivanov.sitesoft_testcase.domain;
+package ru.ivanov.sitesoft_testcase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -10,16 +11,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ru.ivanov.sitesoft_testcase.domain.Document;
+import ru.ivanov.sitesoft_testcase.domain.DocumentAttribute;
+import ru.ivanov.sitesoft_testcase.domain.DocumentAttributeImpl;
+import ru.ivanov.sitesoft_testcase.domain.DocumentImpl;
+import ru.ivanov.sitesoft_testcase.domain.DocumentsDomain;
+
 /**
  * @author Alexandr Ivanov
  *
  */
 public class DocumentsDomainTestImpl implements DocumentsDomain {
 
-	public String calledMethod;
+	public byte[] content;
+	public DocumentAttribute attribute;
 	public long attributeId;
 	public long documentId;
-	public DocumentAttribute attribute;
+	public String calledMethod;
 
 	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#cleanup()
@@ -159,7 +167,15 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	@Override
 	public void setDocumentContent(long documentId, InputStream inputStream) throws SQLException, IOException {
 		// TODO Auto-generated method stub
-
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024 * 1024];
+		int read;
+		
+		while (0 < (read = inputStream.read(buffer))) {
+			outputStream.write(buffer, 0, read);
+		};
+		
+		content = outputStream.toByteArray();
 	}
 
 	/* (non-Javadoc)
@@ -187,6 +203,6 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	}
 
 	private int maxDocumentId;
-	private List<Document> documents = new ArrayList<>();
 	private int maxDocumentAttributeId;
+	private List<Document> documents = new ArrayList<>();
 }

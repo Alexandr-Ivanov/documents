@@ -3,7 +3,12 @@
  */
 package ru.ivanov.sitesoft_testcase;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -11,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ru.ivanov.sitesoft_testcase.domain.Document;
-import ru.ivanov.sitesoft_testcase.domain.DocumentsDomainTestImpl;
 
 /**
  * @author Alexandr Ivanov
@@ -37,14 +41,19 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void addDocumentTest() throws SQLException {
-		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", INDEX, NAME, TYPE}));
+	public void addDocumentTest() throws SQLException, IOException {
+		final Path path = Files.createTempFile(null, null);
+		FileOutputStream outputStream = new FileOutputStream(path.toFile());
+		outputStream.write(STRING.getBytes());
+		outputStream.close();
+		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", INDEX, NAME, TYPE, path.toString()}));
 		Assert.assertEquals("addDocument", domain.calledMethod);
 		final List<Document> documents = domain.getDocumentsList();
 		final Document document = documents.get(documents.size() - 1);
 		Assert.assertEquals(INDEX, document.getIndex());
 		Assert.assertEquals(NAME, document.getName());
 		Assert.assertEquals(TYPE, document.getType());
+		Assert.assertTrue(Arrays.equals(path.toString().getBytes(), domain.content));
 		
 		domain.calledMethod = null;
 		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", INDEX}));
