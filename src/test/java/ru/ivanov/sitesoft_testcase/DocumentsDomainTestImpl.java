@@ -4,6 +4,7 @@
 package ru.ivanov.sitesoft_testcase;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -205,4 +206,10 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	private int maxDocumentId;
 	private int maxDocumentAttributeId;
 	private List<Document> documents = new ArrayList<>();
+
+	@Override
+	public void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		setDocumentContent(addDocument(document), inputStream);
+	}
 }

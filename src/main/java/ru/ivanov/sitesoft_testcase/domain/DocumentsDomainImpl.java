@@ -4,6 +4,7 @@
 package ru.ivanov.sitesoft_testcase.domain;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -85,6 +86,24 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		return result;
 		
  	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addDocument(ru.ivanov.sitesoft_testcase.domain.Document, java.io.FileInputStream)
+	 */
+	@Override
+	public void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException {
+		final boolean oldAutoCommit = connection.getAutoCommit();
+		
+		try {
+			connection.setAutoCommit(false);
+			setDocumentContent(addDocument(document), inputStream);
+			connection.commit();
+		} finally {
+			connection.setAutoCommit(oldAutoCommit);
+		}
+
+	}
 	
 	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#createDatabase()

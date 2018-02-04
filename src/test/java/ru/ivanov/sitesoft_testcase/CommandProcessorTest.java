@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -53,7 +52,7 @@ public class CommandProcessorTest {
 		Assert.assertEquals(INDEX, document.getIndex());
 		Assert.assertEquals(NAME, document.getName());
 		Assert.assertEquals(TYPE, document.getType());
-		Assert.assertTrue(Arrays.equals(path.toString().getBytes(), domain.content));
+		Assert.assertEquals(STRING, new String(domain.content));
 		
 		domain.calledMethod = null;
 		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", INDEX}));

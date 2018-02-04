@@ -3,6 +3,9 @@
  */
 package ru.ivanov.sitesoft_testcase;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -268,16 +271,22 @@ public class CommandProcessor {
 	 * @throws SQLException 
 	 */
 	private void processAddDocument(String[] args) throws SQLException {
-		if (5 > args.length) {
+		if (6 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
 		
-		final Document document = documentsDomain.createDocument();
-		document.setIndex(args[2]);
-		document.setName(args[3]);
-		document.setType(args[4]);
-		documentsDomain.addDocument(document);
+		try (final FileInputStream inputStream = new FileInputStream(args[5])) {
+			final Document document = documentsDomain.createDocument();
+			document.setIndex(args[2]);
+			document.setName(args[3]);
+			document.setType(args[4]);
+			documentsDomain.addDocument(document, inputStream);
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}		
 	}
 
 	private void getDocumentsList() {
