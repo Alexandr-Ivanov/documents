@@ -5,7 +5,9 @@ package ru.ivanov.sitesoft_testcase;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -49,6 +51,10 @@ public class CommandProcessor {
 		case "change":
 			processChange(args);
 			return true;
+
+		case "content":
+			getContent(args);
+			return true;
 			
 		case "document":
 			getDocument(args);
@@ -71,6 +77,26 @@ public class CommandProcessor {
 		default:
 			System.out.println(UNKNOWN_COMMAND);
 			return true;
+		}
+	}
+
+	private void getContent(String[] args) {
+		if (3 > args.length) {
+			System.out.println(TOO_FEW_ARGUMENTS);
+			return;
+		}
+		
+		try (FileOutputStream outputStream = new FileOutputStream(args[2])) {
+			try (InputStream documentContent = documentsDomain.getDocumentContent(Long.parseLong(args[1]))) {
+				byte[] buffer = new byte[1024 * 1024];				
+				int read;
+				
+				while (0 < (read = documentContent.read(buffer))) {
+					outputStream.write(buffer, 0, read);
+				}
+			}
+		} catch (NumberFormatException | SQLException | IOException e) {
+			e.printStackTrace();
 		}
 	}
 
