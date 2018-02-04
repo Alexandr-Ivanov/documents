@@ -88,11 +88,13 @@ public class CommandProcessor {
 		
 		try (FileOutputStream outputStream = new FileOutputStream(args[2])) {
 			try (InputStream documentContent = documentsDomain.getDocumentContent(Long.parseLong(args[1]))) {
-				byte[] buffer = new byte[1024 * 1024];				
-				int read;
-				
-				while (0 < (read = documentContent.read(buffer))) {
-					outputStream.write(buffer, 0, read);
+				if (null != documentContent) {
+					byte[] buffer = new byte[1024 * 1024];				
+					int read;
+					
+					while (0 < (read = documentContent.read(buffer))) {
+						outputStream.write(buffer, 0, read);
+					}
 				}
 			}
 		} catch (NumberFormatException | SQLException | IOException e) {
