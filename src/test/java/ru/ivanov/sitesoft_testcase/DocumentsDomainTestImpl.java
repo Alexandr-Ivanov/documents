@@ -3,6 +3,7 @@
  */
 package ru.ivanov.sitesoft_testcase;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -123,8 +124,8 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 */
 	@Override
 	public InputStream getDocumentContent(long id) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		calledMethod = "getDocumentContent";
+		return new ByteArrayInputStream(content);
 	}
 
 	/* (non-Javadoc)
@@ -203,13 +204,12 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 		this.documentId = documentId;
 	}
 
+	@Override
+	public void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException {
+		setDocumentContent(addDocument(document), inputStream);
+	}
+
 	private int maxDocumentId;
 	private int maxDocumentAttributeId;
 	private List<Document> documents = new ArrayList<>();
-
-	@Override
-	public void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException {
-		// TODO Auto-generated method stub
-		setDocumentContent(addDocument(document), inputStream);
-	}
 }

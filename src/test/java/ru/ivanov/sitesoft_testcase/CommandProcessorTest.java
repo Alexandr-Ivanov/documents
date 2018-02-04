@@ -133,6 +133,19 @@ public class CommandProcessorTest {
 		Assert.assertNull(domain.calledMethod);
 	}
 	
+	@Test
+	public void getContentTest() throws SQLException, IOException {
+		domain.content = STRING.getBytes();
+		Path path = Files.createTempFile(null, null);
+		Assert.assertTrue(commandProcessor.process(new String[]{"content", "19", path.toString()}));
+		Assert.assertEquals("getDocumentContent", domain.calledMethod);
+		Assert.assertEquals(STRING, new String(Files.readAllBytes(path)));
+		
+		domain.calledMethod = null;
+		Assert.assertTrue(commandProcessor.process(new String[]{"content", "19"}));
+		Assert.assertNull(domain.calledMethod);
+	}
+	
 	private DocumentsDomainTestImpl domain;
 	private CommandProcessor commandProcessor;
 
