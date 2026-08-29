@@ -27,7 +27,7 @@ public class ConsoleMain {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws SQLException, IOException {
-		domain = new DocumentsDomainImpl("Documents");
+        DocumentsDomain domain = new DocumentsDomainImpl("Documents");
 		CommandProcessor commandProcessor = new CommandProcessor(domain);
 		
 		if (commandProcessor.process(args)) {
@@ -56,9 +56,8 @@ public class ConsoleMain {
 		}
 		
 		List<String> result = StringSplitter.splitLine(line);
-		return result.toArray(new String[result.size()]);
+		return result.toArray(new String[0]);
 	}
 
 	private static BufferedReader bufferedReader;
-	private static DocumentsDomain domain;
 }
