@@ -38,46 +38,46 @@ public class CommandProcessor {
 		if (0 == args.length) {
 			return true;
 		}
-		
-		switch (args[0]) {
-		case "add":
-			processAdd(args);
-			return true;
-		
-		case "attributes":
-			getAttributes(args);
-			return true;
-		
-		case "change":
-			processChange(args);
-			return true;
 
-		case "content":
-			getContent(args);
-			return true;
-			
-		case "document":
-			getDocument(args);
-			return true;
-			
-		case "documents":
-			getDocumentsList();
-			return true;
-			
-		case "initialization":
-			createDatabase();
-			return true;
-			
-		case "quit":
-			return false;
-
-		case "remove":
-			processRemove(args);
-			return true;
-		default:
-			System.out.println(UNKNOWN_COMMAND);
-			return true;
-		}
+        return switch (args[0]) {
+            case "add" -> {
+                processAdd(args);
+                yield true;
+            }
+            case "attributes" -> {
+                getAttributes(args);
+                yield true;
+            }
+            case "change" -> {
+                processChange(args);
+                yield true;
+            }
+            case "content" -> {
+                getContent(args);
+                yield true;
+            }
+            case "document" -> {
+                getDocument(args);
+                yield true;
+            }
+            case "documents" -> {
+                getDocumentsList();
+                yield true;
+            }
+            case "initialization" -> {
+                createDatabase();
+                yield true;
+            }
+            case "quit" -> false;
+            case "remove" -> {
+                processRemove(args);
+                yield true;
+            }
+            default -> {
+                System.out.println(UNKNOWN_COMMAND);
+                yield true;
+            }
+        };
 	}
 
 	private void getContent(String[] args) {
@@ -115,20 +115,16 @@ public class CommandProcessor {
 			System.out.println(UNKNOWN_COMMAND);
 			return;
 		}
-		
-		switch (args[1]) {
-		case "attribute":
-			try {
-				changeAttribute(args);
-			} catch (NumberFormatException | SQLException e) {
-				e.printStackTrace();
-			}
-			
-			break;
-			
-		default:
-			System.out.println(UNKNOWN_COMMAND);
-		}
+
+        if (args[1].equals("attribute")) {
+            try {
+                changeAttribute(args);
+            } catch (NumberFormatException | SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println(UNKNOWN_COMMAND);
+        }
 	}
 
 	private void changeAttribute(String[] args) throws NumberFormatException, SQLException {
@@ -339,5 +335,5 @@ public class CommandProcessor {
 	private static final String TOO_FEW_ARGUMENTS = "Too few arguments.";
 	private static final String UNKNOWN_COMMAND = "Unknown command.";
 	
-	private DocumentsDomain documentsDomain;
+	private final DocumentsDomain documentsDomain;
 }
