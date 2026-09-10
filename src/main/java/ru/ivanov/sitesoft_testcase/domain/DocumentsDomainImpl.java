@@ -27,7 +27,7 @@ import org.sqlite.SQLiteException;
  */
 public class DocumentsDomainImpl implements DocumentsDomain {
 	public DocumentsDomainImpl(String databaseName) throws SQLException {
-		connection = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+		connection = DriverManager.getConnection("jdbc:sqlite:/var/db/" + databaseName);
 		statement = connection.createStatement();
 	}
 	
