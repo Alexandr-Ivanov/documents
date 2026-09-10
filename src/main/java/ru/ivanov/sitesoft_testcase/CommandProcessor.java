@@ -39,45 +39,40 @@ public class CommandProcessor {
 			return true;
 		}
 
-        return switch (args[0]) {
+		if ("quit".equals(args[0])) {
+			return false;
+		}
+
+        switch (args[0]) {
             case "add" -> {
                 processAdd(args);
-                yield true;
             }
             case "attributes" -> {
                 getAttributes(args);
-                yield true;
             }
             case "change" -> {
                 processChange(args);
-                yield true;
             }
             case "content" -> {
                 getContent(args);
-                yield true;
             }
             case "document" -> {
                 getDocument(args);
-                yield true;
             }
             case "documents" -> {
                 getDocumentsList();
-                yield true;
             }
             case "initialization" -> {
                 createDatabase();
-                yield true;
             }
-            case "quit" -> false;
             case "remove" -> {
                 processRemove(args);
-                yield true;
             }
             default -> {
                 System.out.println(UNKNOWN_COMMAND);
-                yield true;
             }
-        };
+        }
+        return true;
 	}
 
 	private void getContent(String[] args) {
