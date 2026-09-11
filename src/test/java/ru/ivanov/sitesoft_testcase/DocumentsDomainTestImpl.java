@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -132,7 +131,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocumentsList()
 	 */
 	@Override
-	public List<Document> getDocumentsList() throws SQLException {
+	public List<Document> getDocumentsList() {
 		final Document document = createDocument();
 		document.setIndex("index");
 		document.setName("name");
@@ -175,7 +174,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 		
 		while (0 < (read = inputStream.read(buffer))) {
 			outputStream.write(buffer, 0, read);
-		};
+		}
 		
 		content = outputStream.toByteArray();
 	}

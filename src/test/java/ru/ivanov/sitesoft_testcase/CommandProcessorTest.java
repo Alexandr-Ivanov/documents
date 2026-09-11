@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -40,7 +39,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void addDocumentTest() throws SQLException, IOException {
+	public void addDocumentTest() throws IOException {
 		final Path path = Files.createTempFile(null, null);
 		FileOutputStream outputStream = new FileOutputStream(path.toFile());
 		outputStream.write(STRING.getBytes());
