@@ -85,8 +85,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		preparedStatement.executeUpdate();
 		
 		final ResultSet resultSet = preparedStatement.getGeneratedKeys();
-		long result = resultSet.getLong(1);
-		return result;
+        return resultSet.getLong(1);
 		
  	}
 	
@@ -176,8 +175,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		
 		if (resultSet.next()) {
-			DocumentAttribute attribute = getAttribute(resultSet);
-			return attribute;
+            return getAttribute(resultSet);
 		}
 		
 		return null;
@@ -380,8 +378,8 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		}
 	}
 	
-	private Connection connection;
-	private Statement statement;
+	private final Connection connection;
+	private final Statement statement;
 	private static final String INSERT_INTO_DOCUMENTS = "INSERT INTO documents (name,type) VALUES (?,?);";
 	private static final String UPDATE_DOCUMENT_CONTENT = "UPDATE documents SET content=? WHERE id=?";
 	private static final String GET_ATTRIBUTES_FOR_DOCUMENT = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes where documentId=?";

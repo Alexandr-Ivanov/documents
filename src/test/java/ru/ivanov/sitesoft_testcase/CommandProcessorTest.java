@@ -34,7 +34,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void documentsTest() throws SQLException {
+	public void documentsTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"documents"}));
 		Assert.assertEquals("getDocumentsList", domain.calledMethod);
 	}
@@ -48,7 +48,7 @@ public class CommandProcessorTest {
 		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", NAME, TYPE, path.toString()}));
 		Assert.assertEquals("addDocument", domain.calledMethod);
 		final List<Document> documents = domain.getDocumentsList();
-		final Document document = documents.get(documents.size() - 1);
+		final Document document = documents.getLast();
 		Assert.assertEquals(INDEX, document.getIndex());
 		Assert.assertEquals(NAME, document.getName());
 		Assert.assertEquals(TYPE, document.getType());
@@ -60,7 +60,7 @@ public class CommandProcessorTest {
 	}
 
 	@Test
-	public void getDocumentTest() throws SQLException {
+	public void getDocumentTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"document", "11"}));
 		Assert.assertEquals("getDocument", domain.calledMethod);
 		Assert.assertEquals(11, domain.documentId);
@@ -71,7 +71,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void removeDocumentTest() throws SQLException {
+	public void removeDocumentTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"remove", "document", "12"}));
 		Assert.assertEquals("removeDocument", domain.calledMethod);
 		Assert.assertEquals(12, domain.documentId);
@@ -82,7 +82,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void attributesTest() throws SQLException {
+	public void attributesTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"attributes", "13"}));
 		Assert.assertEquals("getDocumentAttributes", domain.calledMethod);
 		Assert.assertEquals(13, domain.documentId);
@@ -93,7 +93,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void addAttributeTest() throws SQLException {
+	public void addAttributeTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"add", "attribute", "14", NAME, TYPE, STRING, "15"}));
 		Assert.assertEquals("addAttribute", domain.calledMethod);
 		Assert.assertEquals(14, domain.attribute.getDocumentId());
@@ -108,7 +108,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void changeAttributeTest() throws SQLException {
+	public void changeAttributeTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"change", "attribute", "16", NAME, TYPE, STRING, "17"}));
 		Assert.assertEquals("updateAttribute", domain.calledMethod);
 		Assert.assertEquals(16, domain.attribute.getId());
@@ -123,7 +123,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void removeAttributeTest() throws SQLException {
+	public void removeAttributeTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"remove", "attribute", "18"}));
 		Assert.assertEquals("removeAttribute", domain.calledMethod);
 		Assert.assertEquals(18, domain.attributeId);
@@ -134,7 +134,7 @@ public class CommandProcessorTest {
 	}
 	
 	@Test
-	public void getContentTest() throws SQLException, IOException {
+	public void getContentTest() throws IOException {
 		domain.content = STRING.getBytes();
 		Path path = Files.createTempFile(null, null);
 		Assert.assertTrue(commandProcessor.process(new String[]{"content", "19", path.toString()}));

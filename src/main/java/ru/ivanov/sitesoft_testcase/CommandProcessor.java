@@ -44,33 +44,15 @@ public class CommandProcessor {
 		}
 
         switch (args[0]) {
-            case "add" -> {
-                processAdd(args);
-            }
-            case "attributes" -> {
-                getAttributes(args);
-            }
-            case "change" -> {
-                processChange(args);
-            }
-            case "content" -> {
-                getContent(args);
-            }
-            case "document" -> {
-                getDocument(args);
-            }
-            case "documents" -> {
-                getDocumentsList();
-            }
-            case "initialization" -> {
-                createDatabase();
-            }
-            case "remove" -> {
-                processRemove(args);
-            }
-            default -> {
-                System.out.println(UNKNOWN_COMMAND);
-            }
+            case "add" -> processAdd(args);
+            case "attributes" -> getAttributes(args);
+            case "change" -> processChange(args);
+            case "content" -> getContent(args);
+            case "document" -> getDocument(args);
+            case "documents" -> getDocumentsList();
+            case "initialization" -> createDatabase();
+            case "remove" -> processRemove(args);
+            default -> System.out.println(UNKNOWN_COMMAND);
         }
         return true;
 	}
