@@ -35,7 +35,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#cleanup()
 	 */
 	@Override
-	public void cleanup() throws SQLException {
+	public void cleanup() {
 		// TODO Auto-generated method stub
 
 	}
@@ -44,7 +44,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addAttribute(ru.ivanov.sitesoft_testcase.domain.DocumentAttribute)
 	 */
 	@Override
-	public long addAttribute(DocumentAttribute attribute) throws SQLException {
+	public long addAttribute(DocumentAttribute attribute) {
 		maxDocumentAttributeId++;
 		attribute.setId(maxDocumentAttributeId);
 		this.attribute = attribute;
@@ -56,7 +56,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#createDatabase()
 	 */
 	@Override
-	public void createDatabase() throws SQLException {
+	public void createDatabase() {
 		// TODO Auto-generated method stub
 
 	}
@@ -82,7 +82,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocument(long)
 	 */
 	@Override
-	public Document getDocument(long documentId) throws SQLException {
+	public Document getDocument(long documentId) {
 		calledMethod = "getDocument";
 		this.documentId = documentId;
 		return null;
@@ -92,7 +92,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocumentAttribute(long)
 	 */
 	@Override
-	public DocumentAttribute getDocumentAttribute(long attributeId) throws SQLException {
+	public DocumentAttribute getDocumentAttribute(long attributeId) {
 		final DocumentAttribute documentAttribute = createDocumentAttribute();
 		documentAttribute.setId(attributeId);
 		documentAttribute.setName("name");
@@ -104,7 +104,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocumentAttributes(long)
 	 */
 	@Override
-	public List<DocumentAttribute> getDocumentAttributes(long documentId) throws SQLException {
+	public List<DocumentAttribute> getDocumentAttributes(long documentId) {
 		calledMethod = "getDocumentAttributes";
 		this.documentId = documentId; 
 		List<DocumentAttribute> attributes = new ArrayList<>();
@@ -123,7 +123,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocumentContent(long)
 	 */
 	@Override
-	public InputStream getDocumentContent(long id) throws SQLException {
+	public InputStream getDocumentContent(long id) {
 		calledMethod = "getDocumentContent";
 		return new ByteArrayInputStream(content);
 	}
@@ -146,7 +146,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#removeAttribute(long)
 	 */
 	@Override
-	public void removeAttribute(long attributeId) throws SQLException {
+	public void removeAttribute(long attributeId) {
 		calledMethod = "removeAttribute";
 		this.attributeId = attributeId;
 	}
@@ -155,7 +155,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addDocument(ru.ivanov.sitesoft_testcase.domain.Document)
 	 */
 	@Override
-	public long addDocument(Document document) throws SQLException {
+	public long addDocument(Document document) {
 		calledMethod = "addDocument";
 		maxDocumentId++;
 		document.setId(maxDocumentId);
@@ -167,7 +167,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#setDocumentContent(long, java.io.InputStream)
 	 */
 	@Override
-	public void setDocumentContent(long documentId, InputStream inputStream) throws SQLException, IOException {
+	public void setDocumentContent(long documentId, InputStream inputStream) throws IOException {
 		// TODO Auto-generated method stub
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024 * 1024];
@@ -184,7 +184,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#setDocumentContent(long, byte[])
 	 */
 	@Override
-	public void setDocumentContent(long documentId, byte[] bytes) throws SQLException {
+	public void setDocumentContent(long documentId, byte[] bytes) {
 		// TODO Auto-generated method stub
 
 	}
@@ -193,19 +193,19 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#updateAttribute(ru.ivanov.sitesoft_testcase.domain.DocumentAttribute)
 	 */
 	@Override
-	public void updateAttribute(DocumentAttribute attribute) throws SQLException {
+	public void updateAttribute(DocumentAttribute attribute) {
 		calledMethod = "updateAttribute";
 		this.attribute = attribute; 
 	}
 
 	@Override
-	public void removeDocument(long documentId) throws SQLException {
+	public void removeDocument(long documentId) {
 		calledMethod = "removeDocument";
 		this.documentId = documentId;
 	}
 
 	@Override
-	public void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException {
+	public void addDocument(Document document, FileInputStream inputStream) throws IOException {
 		setDocumentContent(addDocument(document), inputStream);
 	}
 
