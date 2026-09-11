@@ -211,5 +211,5 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 
 	private int maxDocumentId;
 	private int maxDocumentAttributeId;
-	private List<Document> documents = new ArrayList<>();
+	private final List<Document> documents = new ArrayList<>();
 }

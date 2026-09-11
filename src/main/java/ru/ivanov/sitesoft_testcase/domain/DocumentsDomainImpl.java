@@ -305,7 +305,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	public void setDocumentContent(long documentId, InputStream inputStream) throws SQLException, IOException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024 * 1024];
-		int len = 0;
+		int len;
 		
 		while (0 < (len = inputStream.read(buffer))) {
 			os.write(buffer, 0, len);
