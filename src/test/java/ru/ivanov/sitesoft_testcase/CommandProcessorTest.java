@@ -45,7 +45,7 @@ public class CommandProcessorTest {
 		FileOutputStream outputStream = new FileOutputStream(path.toFile());
 		outputStream.write(STRING.getBytes());
 		outputStream.close();
-		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", INDEX, NAME, TYPE, path.toString()}));
+		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", NAME, TYPE, path.toString()}));
 		Assert.assertEquals("addDocument", domain.calledMethod);
 		final List<Document> documents = domain.getDocumentsList();
 		final Document document = documents.get(documents.size() - 1);
@@ -55,7 +55,7 @@ public class CommandProcessorTest {
 		Assert.assertEquals(STRING, new String(domain.content));
 		
 		domain.calledMethod = null;
-		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", INDEX}));
+		Assert.assertTrue(commandProcessor.process(new String[]{"add", "document", NAME}));
 		Assert.assertNull(domain.calledMethod);
 	}
 

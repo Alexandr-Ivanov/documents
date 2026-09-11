@@ -26,6 +26,9 @@ import org.sqlite.SQLiteException;
  *
  */
 public class DocumentsDomainImpl implements DocumentsDomain {
+
+	public static final String SELECT_DOCUMENTS = "SELECT id, name, type FROM documents ORDER BY id ASC;";
+
 	public DocumentsDomainImpl(String databaseName) throws SQLException {
 		connection = DriverManager.getConnection("jdbc:sqlite:/var/db/" + databaseName);
 		statement = connection.createStatement();
@@ -122,7 +125,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 			// if no such table exists
 		}
 		
-		statement.execute("CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, '_index' CHAR(50) NOT NULL, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);");
+		statement.execute("CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);");
 		statement.execute("CREATE TABLE 'documentAttributes' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'documentId' INTEGER NOT NULL, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'stringValue' TEXT, 'integerValue' INTEGER);");
 	}
 
@@ -157,8 +160,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		
 		if (resultSet.next()) {
-			Document document = getDocument(resultSet);
-			return document;
+            return getDocument(resultSet);
 		}
 		
 		return null;
@@ -238,7 +240,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	@Override
 	public List<Document> getDocumentsList() throws SQLException {
 		List<Document> result = new ArrayList<>();
-		final ResultSet resultSet = statement.executeQuery("SELECT id, _index, name, type FROM documents ORDER BY _index ASC;");
+		final ResultSet resultSet = statement.executeQuery(SELECT_DOCUMENTS);
 		
 		while (resultSet.next()) {
 			Document document = getDocument(resultSet);
@@ -257,9 +259,8 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	private Document getDocument(final ResultSet resultSet) throws SQLException {
 		Document document = createDocument();
 		document.setId(resultSet.getLong(1));
-		document.setIndex(resultSet.getString(2));
-		document.setName(resultSet.getString(3));
-		document.setType(resultSet.getString(4));
+		document.setName(resultSet.getString(2));
+		document.setType(resultSet.getString(3));
 		return document;
 	}
 	
@@ -278,12 +279,6 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public long addDocument(Document document) throws SQLException {
-		final String index = document.getIndex();
-		
-		if (null == index || index.isEmpty()) {
-			throw new IllegalArgumentException("document index is undefined");
-		}
-		
 		final String name = document.getName();
 		
 		if (null == name || name.isEmpty()) {
@@ -297,14 +292,12 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		}
 		
 		final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_INTO_DOCUMENTS);
-		preparedStatement.setString(1, index);
-		preparedStatement.setString(2, name);
-		preparedStatement.setString(3, type);
+		preparedStatement.setString(1, name);
+		preparedStatement.setString(2, type);
 		preparedStatement.executeUpdate();
 		
 		final ResultSet resultSet = preparedStatement.getGeneratedKeys();
-		long result = resultSet.getLong(1);
-		return result;
+        return resultSet.getLong(1);
 	}
 	
 	/* (non-Javadoc)
@@ -389,13 +382,13 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	
 	private Connection connection;
 	private Statement statement;
-	private static final String INSERT_INTO_DOCUMENTS = "INSERT INTO documents (_index,name,type) VALUES (?,?,?);";
+	private static final String INSERT_INTO_DOCUMENTS = "INSERT INTO documents (name,type) VALUES (?,?);";
 	private static final String UPDATE_DOCUMENT_CONTENT = "UPDATE documents SET content=? WHERE id=?";
 	private static final String GET_ATTRIBUTES_FOR_DOCUMENT = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes where documentId=?";
 	private static final String GET_DOCUMENT_CONTENT = "SELECT content FROM documents WHERE id=?;";
 	private static final String INSERT_DOCUMENT_ATTRIBUTE = "INSERT INTO documentAttributes (documentId,name,type,stringValue,integerValue) VALUES (?,?,?,?,?);";
 	private static final String GET_DOCUMENT_ATTRIBUTE_BY_ID = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes WHERE id=?;";
-	private static final String GET_DOCUMENT_BY_ID = "SELECT id, _index, name, type FROM documents WHERE id=?;";
+	private static final String GET_DOCUMENT_BY_ID = "SELECT id, name, type FROM documents WHERE id=?;";
 	private static final String UPDATE_ATTRIBUTE = "UPDATE documentAttributes SET name=?,type=?,stringValue=?,integerValue=? WHERE id=?;";
 	private static final String DELETE_ATTRIBUTE = "DELETE FROM documentAttributes WHERE id=?;";
 	private static final String DELETE_ATTRIBUTES_FOR_DOCUMENT = "DELETE FROM documentAttributes WHERE documentId=?;";

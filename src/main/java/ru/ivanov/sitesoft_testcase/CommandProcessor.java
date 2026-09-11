@@ -290,16 +290,15 @@ public class CommandProcessor {
 	 * @throws SQLException 
 	 */
 	private void processAddDocument(String[] args) throws SQLException {
-		if (6 > args.length) {
+		if (5 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
 		
-		try (final FileInputStream inputStream = new FileInputStream(args[5])) {
+		try (final FileInputStream inputStream = new FileInputStream(args[4])) {
 			final Document document = documentsDomain.createDocument();
-			document.setIndex(args[2]);
-			document.setName(args[3]);
-			document.setType(args[4]);
+			document.setName(args[2]);
+			document.setType(args[3]);
 			documentsDomain.addDocument(document, inputStream);
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
@@ -324,7 +323,7 @@ public class CommandProcessor {
 	 * @param document
 	 */
 	private void printDocument(Document document) {
-		System.out.println(MessageFormat.format("id: {0}; index: {1}; name: {2}, type: {3}.", document.getId(), document.getIndex(), document.getName(), document.getType()));
+		System.out.println(MessageFormat.format("id: {0}; name: {1}, type: {2}.", document.getId(), document.getName(), document.getType()));
 	}
 
 	private static final String TOO_FEW_ARGUMENTS = "Too few arguments.";

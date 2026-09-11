@@ -38,16 +38,14 @@ public class DocumentsDomainTest {
 		Assert.assertEquals("documents quantity in empty database", 0, documents.size());
 		
 		final Document document = domain.createDocument();
-		document.setIndex(INDEX + "2");
 		document.setName(NAME + "2");
 		document.setType(TYPE + "2");
-		domain.addDocument(document);
+		var docId = domain.addDocument(document);
 		
 		final List<Document> documents2 = domain.getDocumentsList();
-		Assert.assertEquals("we must have 1 document", 01, documents2.size());
+		Assert.assertEquals("we must have 1 document", 1, documents2.size());
 		
 		final Document document1 = domain.createDocument();
-		document1.setIndex(INDEX + "1");
 		document1.setName(NAME + "1");
 		document1.setType(TYPE + "1");
 		domain.addDocument(document1);
@@ -55,24 +53,14 @@ public class DocumentsDomainTest {
 		final List<Document> documents3 = domain.getDocumentsList();
 		Assert.assertEquals("we must have 2 documents", 2, documents3.size());
 		
-		final Document document2 = documents3.get(0);
-		Assert.assertEquals(INDEX + "1", document2.getIndex()); // order by index
+		final Document document2 = documents3.getFirst();
+		Assert.assertEquals(docId, document2.getId());
 	}
 	
 	@Test
 	public void badDocumentTest() throws SQLException {
 		final Document document = domain.createDocument();
-		document.setName(NAME);
 		document.setType(TYPE);
-		
-		try {
-			domain.addDocument(document);
-			Assert.fail("empty index");
-		} catch (IllegalArgumentException e) {
-			Assert.assertEquals("document index is undefined", e.getMessage());
-		}
-		
-		document.setIndex(INDEX);
 		document.setName(null);
 		
 		try {
@@ -178,7 +166,7 @@ public class DocumentsDomainTest {
 		final List<DocumentAttribute> attributes4 = domain.getDocumentAttributes(newId);
 		Assert.assertEquals("one attribute remains", 1, attributes4.size());
 		
-		final DocumentAttribute attribute3 = attributes4.get(0);
+		final DocumentAttribute attribute3 = attributes4.getFirst();
 		attribute3.setName(NAME_1);
 		attribute3.setType(TYPE_1);
 		attribute3.setString(STRING_VALUE_1);
