@@ -147,8 +147,7 @@ public class CommandProcessorTest {
 	private DocumentsDomainTestImpl domain;
 	private CommandProcessor commandProcessor;
 
-	private static final String INDEX = "index";
-	private static final String NAME = "name";
+    private static final String NAME = "name";
 	private static final String TYPE = "type";
 	private static final String STRING = "string";
 }

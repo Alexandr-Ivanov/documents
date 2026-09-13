@@ -215,9 +215,8 @@ public class DocumentsDomainTest {
 		Assert.assertNull(domain.getDocument(id));
 		Assert.assertTrue(domain.getDocumentAttributes(id).isEmpty());
 	}
-	
-	private static final String INDEX = "index";
-	private static final String NAME = "name";
+
+    private static final String NAME = "name";
 	private static final String NAME_1 = "name 1";
 	private static final String TYPE = "type";
 	private static final String TYPE_1 = "type 1";
