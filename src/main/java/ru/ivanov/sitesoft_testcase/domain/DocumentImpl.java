@@ -20,14 +20,6 @@ public class DocumentImpl implements Document {
 	}
 
 	/* (non-Javadoc)
-	 * @see ru.ivanov.sitesoft_testcase.Document#getIndex()
-	 */
-	@Override
-	public String getIndex() {
-		return index;
-	}
-
-	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.Document#getName()
 	 */
 	@Override
@@ -52,14 +44,6 @@ public class DocumentImpl implements Document {
 	}
 
 	/* (non-Javadoc)
-	 * @see ru.ivanov.sitesoft_testcase.Document#setIndex(java.lang.String)
-	 */
-	@Override
-	public void setIndex(String index) {
-		this.index = index;
-	}
-
-	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.Document#setName(java.lang.String)
 	 */
 	@Override
@@ -76,7 +60,6 @@ public class DocumentImpl implements Document {
 	}
 
 	private long id;
-	private String index;
-	private String name;
+    private String name;
 	private String type;
 }

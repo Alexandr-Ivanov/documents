@@ -132,11 +132,6 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 */
 	@Override
 	public List<Document> getDocumentsList() {
-		final Document document = createDocument();
-		document.setIndex("index");
-		document.setName("name");
-		document.setType("type");
-		addDocument(document);
 		calledMethod = "getDocumentsList";
 		return Collections.unmodifiableList(documents);
 	}

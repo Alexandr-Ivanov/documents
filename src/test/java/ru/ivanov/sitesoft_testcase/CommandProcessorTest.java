@@ -48,7 +48,6 @@ public class CommandProcessorTest {
 		Assert.assertEquals("addDocument", domain.calledMethod);
 		final List<Document> documents = domain.getDocumentsList();
 		final Document document = documents.getLast();
-		Assert.assertEquals(INDEX, document.getIndex());
 		Assert.assertEquals(NAME, document.getName());
 		Assert.assertEquals(TYPE, document.getType());
 		Assert.assertEquals(STRING, new String(domain.content));

@@ -84,7 +84,6 @@ public class DocumentsDomainTest {
 	@Test
 	public void documentContentTest() throws SQLException, IOException {
 		Document document = domain.createDocument();
-		document.setIndex(INDEX);
 		document.setName(NAME);
 		document.setType(TYPE);
 		long newId = domain.addDocument(document);
@@ -106,7 +105,6 @@ public class DocumentsDomainTest {
 	@Test
 	public void documentAttributeTest() throws SQLException {
 		Document document = domain.createDocument();
-		document.setIndex(INDEX);
 		document.setName(NAME);
 		document.setType(TYPE);
 		long newId = domain.addDocument(document);
@@ -183,7 +181,6 @@ public class DocumentsDomainTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void unexistingDocument() throws SQLException {
 		final Document document = domain.createDocument();
-		document.setIndex(INDEX);
 		document.setName(NAME);
 		document.setType(TYPE);
 		long documentId = domain.addDocument(document);
@@ -202,7 +199,6 @@ public class DocumentsDomainTest {
 	@Test
 	public void removeDocumentTest() throws SQLException {
 		final Document document = domain.createDocument();
-		document.setIndex(INDEX);
 		document.setName(NAME);
 		document.setType(TYPE);
 		long id = domain.addDocument(document);
