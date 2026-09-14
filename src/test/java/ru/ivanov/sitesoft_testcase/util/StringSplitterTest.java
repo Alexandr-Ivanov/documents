@@ -16,7 +16,7 @@ public class StringSplitterTest {
 	@Test
 	public void tabTest() {
 		final List<String> splitLine = StringSplitter.splitLine("first\tsecond"); // with tabs
-		Assert.assertEquals("first", splitLine.get(0));
+		Assert.assertEquals("first", splitLine.getFirst());
 		Assert.assertEquals("must be two strings", 2, splitLine.size());
 	}
 	

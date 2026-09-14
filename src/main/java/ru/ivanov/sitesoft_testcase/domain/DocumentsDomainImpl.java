@@ -133,7 +133,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public Document createDocument() {
-		final Document document = new DocumentImpl();
+		final Document document = new Document();
 		document.setId(-1L);
 		return document;
 	}
