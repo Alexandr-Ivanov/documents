@@ -14,7 +14,6 @@ import java.util.List;
 
 import ru.ivanov.sitesoft_testcase.domain.Document;
 import ru.ivanov.sitesoft_testcase.domain.DocumentAttribute;
-import ru.ivanov.sitesoft_testcase.domain.DocumentAttributeImpl;
 import ru.ivanov.sitesoft_testcase.domain.DocumentsDomain;
 
 /**
@@ -73,7 +72,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 */
 	@Override
 	public DocumentAttribute createDocumentAttribute() {
-		return new DocumentAttributeImpl();
+		return new DocumentAttribute();
 	}
 
 	/* (non-Javadoc)

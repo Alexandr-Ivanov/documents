@@ -143,7 +143,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public DocumentAttribute createDocumentAttribute() {
-		final DocumentAttribute attribute = new DocumentAttributeImpl();
+		final DocumentAttribute attribute = new DocumentAttribute();
 		attribute.setId(-1);
 		attribute.setDocumentId(-1);
 		return attribute;
