@@ -15,11 +15,8 @@ public class StringSplitter {
 		List<String> result = new ArrayList<>();
 		StringBuilder currentToken = new StringBuilder();
 		boolean inQuotes = false;
-		int i = 0;
 
-		while (i < line.length()) {
-			char ch = line.charAt(i);
-
+		for (char ch : line.toCharArray()) {
 			if (ch == '"') {
 				inQuotes = !inQuotes;
 				currentToken.append(ch);
@@ -31,7 +28,6 @@ public class StringSplitter {
 			} else {
 				currentToken.append(ch);
 			}
-			i++;
 		}
 
 		// Add last token if present
