@@ -11,40 +11,54 @@ import java.util.List;
  *
  */
 public class StringSplitter {
-
-	/**
-	 * @param line
-	 * @return
-	 */
 	public static List<String> splitLine(final String line) {
 		List<String> result = new ArrayList<>();
-		
-		if (line.startsWith("\"")) {
-			final int index = line.indexOf('"', 1);
-			
-			if (0 < index) {
-				result.add(line.substring(1, index));
-				
-				if (index < line.length() - 1) {
-					result.addAll(splitLine(line.substring(index + 1)));
+		StringBuilder currentToken = new StringBuilder();
+		boolean inQuotes = false;
+		int i = 0;
+
+		while (i < line.length()) {
+			char ch = line.charAt(i);
+
+			if (ch == '"') {
+				inQuotes = !inQuotes;
+				currentToken.append(ch);
+			} else if (!inQuotes && Character.isWhitespace(ch)) {
+				if (!currentToken.isEmpty()) {
+					add(result, currentToken);
+					currentToken.setLength(0);
 				}
-				
-				return result;
+			} else {
+				currentToken.append(ch);
+			}
+			i++;
+		}
+
+		// Add last token if present
+		if (!currentToken.isEmpty()) {
+			add(result, currentToken);
+		}
+
+		return result;
+	}
+
+	private static void add(List<String> result, StringBuilder currentToken) {
+		String line = currentToken.toString().trim();
+
+		if (line.isEmpty()) {
+			return;
+		}
+
+		if ('"' == line.charAt(0)) {
+			final int index = line.lastIndexOf('"');
+
+			if (1 < index) {
+				result.add(line.substring(1, index));
+				return;
 			}
 		}
-		
-		final String[] splitLine = line.split("\\s", 2);		
-		final String first = splitLine[0];
-		
-		if (!first.isEmpty()) {
-			result.add(first);
-		}
-		
-		if (1 < splitLine.length) {
-			result.addAll(splitLine(splitLine[1]));
-		}
-		
-		return result;
+
+		result.add(line);
 	}
 
 }
