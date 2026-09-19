@@ -37,31 +37,25 @@ public class DocumentsDomainTest {
 		final List<Document> documents = domain.getDocumentsList();
 		Assert.assertEquals("documents quantity in empty database", 0, documents.size());
 		
-		final Document document = domain.createDocument();
-		document.setName(NAME + "2");
-		document.setType(TYPE + "2");
+		final Document document = domain.createDocument(NAME + "2", TYPE + "2");
 		var docId = domain.addDocument(document);
 		
 		final List<Document> documents2 = domain.getDocumentsList();
 		Assert.assertEquals("we must have 1 document", 1, documents2.size());
 		
-		final Document document1 = domain.createDocument();
-		document1.setName(NAME + "1");
-		document1.setType(TYPE + "1");
+		final Document document1 = domain.createDocument(NAME + "1", TYPE + "1");
 		domain.addDocument(document1);
 		
 		final List<Document> documents3 = domain.getDocumentsList();
 		Assert.assertEquals("we must have 2 documents", 2, documents3.size());
 		
 		final Document document2 = documents3.getFirst();
-		Assert.assertEquals(docId, document2.getId());
+		Assert.assertEquals(docId, document2.id());
 	}
 	
 	@Test
 	public void badDocumentTest() throws SQLException {
-		final Document document = domain.createDocument();
-		document.setType(TYPE);
-		document.setName(null);
+		Document document = domain.createDocument(null,TYPE);
 		
 		try {
 			domain.addDocument(document);
@@ -70,8 +64,7 @@ public class DocumentsDomainTest {
 			Assert.assertEquals("document name is undefined", e.getMessage());
 		}
 		
-		document.setName(NAME);
-		document.setType(null);
+		document = domain.createDocument(NAME, null);
 		
 		try {
 			domain.addDocument(document);
@@ -83,9 +76,7 @@ public class DocumentsDomainTest {
 	
 	@Test
 	public void documentContentTest() throws SQLException, IOException {
-		Document document = domain.createDocument();
-		document.setName(NAME);
-		document.setType(TYPE);
+		Document document = domain.createDocument(NAME, TYPE);
 		long newId = domain.addDocument(document);
 		Assert.assertTrue("id must be greater then 0", 0 < newId);
 		byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -104,9 +95,7 @@ public class DocumentsDomainTest {
 	
 	@Test
 	public void documentAttributeTest() throws SQLException {
-		Document document = domain.createDocument();
-		document.setName(NAME);
-		document.setType(TYPE);
+		Document document = domain.createDocument(NAME, TYPE);
 		long newId = domain.addDocument(document);
 		final List<DocumentAttribute> attributes = domain.getDocumentAttributes(newId);
 		Assert.assertTrue("new document has no attributes", attributes.isEmpty());
@@ -180,9 +169,7 @@ public class DocumentsDomainTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void unexistingDocument() throws SQLException {
-		final Document document = domain.createDocument();
-		document.setName(NAME);
-		document.setType(TYPE);
+		final Document document = domain.createDocument(NAME, TYPE);
 		long documentId = domain.addDocument(document);
 		
 		while (null != domain.getDocument(documentId)) { // находим идентификатор, не принадлежащий никакому документу
@@ -198,9 +185,7 @@ public class DocumentsDomainTest {
 	
 	@Test
 	public void removeDocumentTest() throws SQLException {
-		final Document document = domain.createDocument();
-		document.setName(NAME);
-		document.setType(TYPE);
+		final Document document = domain.createDocument(NAME, TYPE);
 		long id = domain.addDocument(document);
 		Assert.assertNotNull(domain.getDocument(id));
 		

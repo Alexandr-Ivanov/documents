@@ -62,9 +62,9 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#createDocument()
 	 */
 	@Override
-	public Document createDocument() {
+	public Document createDocument(String name, String type) {
 		// TODO Auto-generated method stub
-		return new Document();
+		return new Document(-1, name, type);
 	}
 
 	/* (non-Javadoc)
@@ -150,8 +150,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	public long addDocument(Document document) {
 		calledMethod = "addDocument";
 		maxDocumentId++;
-		document.setId(maxDocumentId);
-		documents.add(document);
+		documents.add(new Document(maxDocumentId, document.name(), document.type()));
 		return maxDocumentId;
 	}
 

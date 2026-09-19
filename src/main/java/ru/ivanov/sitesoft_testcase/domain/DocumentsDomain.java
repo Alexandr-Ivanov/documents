@@ -36,7 +36,7 @@ public interface DocumentsDomain {
 	 * создать новый пустой документ
 	 * @return новый пустой документ с id = -1
 	 */
-	Document createDocument();
+	Document createDocument(String name, String type);
 
 	/**
 	 * Создать новый пустой атрибут

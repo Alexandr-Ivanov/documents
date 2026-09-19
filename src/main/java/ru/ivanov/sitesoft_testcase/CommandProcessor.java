@@ -278,9 +278,7 @@ public class CommandProcessor {
 		}
 		
 		try (final FileInputStream inputStream = new FileInputStream(args[4])) {
-			final Document document = documentsDomain.createDocument();
-			document.setName(args[2]);
-			document.setType(args[3]);
+			final Document document = documentsDomain.createDocument(args[2], args[3]);
 			documentsDomain.addDocument(document, inputStream);
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
@@ -305,7 +303,7 @@ public class CommandProcessor {
 	 * @param document
 	 */
 	private void printDocument(Document document) {
-		System.out.println(MessageFormat.format("id: {0}; name: {1}, type: {2}.", document.getId(), document.getName(), document.getType()));
+		System.out.println(MessageFormat.format("id: {0}; name: {1}, type: {2}.", document.id(), document.name(), document.type()));
 	}
 
 	private static final String TOO_FEW_ARGUMENTS = "Too few arguments.";

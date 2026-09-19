@@ -132,10 +132,8 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#createDocument()
 	 */
 	@Override
-	public Document createDocument() {
-		final Document document = new Document();
-		document.setId(-1L);
-		return document;
+	public Document createDocument(String name, String type) {
+        return new Document(-1, name, type);
 	}
 
 	/* (non-Javadoc)
@@ -255,11 +253,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 * @throws SQLException
 	 */
 	private Document getDocument(final ResultSet resultSet) throws SQLException {
-		Document document = createDocument();
-		document.setId(resultSet.getLong(1));
-		document.setName(resultSet.getString(2));
-		document.setType(resultSet.getString(3));
-		return document;
+        return new Document(resultSet.getLong(1), resultSet.getString(2), resultSet.getString(3));
 	}
 	
 	/* (non-Javadoc)
@@ -277,13 +271,13 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public long addDocument(Document document) throws SQLException {
-		final String name = document.getName();
+		final String name = document.name();
 		
 		if (null == name || name.isEmpty()) {
 			throw new IllegalArgumentException("document name is undefined");
 		}
 		
-		final String type = document.getType();
+		final String type = document.type();
 		
 		if (null == type || type.isEmpty()) {
 			throw new IllegalArgumentException("document type is undefined");
