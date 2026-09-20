@@ -93,11 +93,11 @@ public class CommandProcessorTest {
 	public void addAttributeTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"add", "attribute", "14", NAME, TYPE, STRING, "15"}));
 		Assert.assertEquals("addAttribute", domain.calledMethod);
-		Assert.assertEquals(14, domain.attribute.getDocumentId());
-		Assert.assertEquals(NAME, domain.attribute.getName());
-		Assert.assertEquals(TYPE, domain.attribute.getType());
-		Assert.assertEquals(STRING, domain.attribute.getStringValue());
-		Assert.assertEquals(15, domain.attribute.getIntegerValue().intValue());
+		Assert.assertEquals(14, domain.attribute.documentId());
+		Assert.assertEquals(NAME, domain.attribute.name());
+		Assert.assertEquals(TYPE, domain.attribute.type());
+		Assert.assertEquals(STRING, domain.attribute.stringValue());
+		Assert.assertEquals(15, domain.attribute.integerValue().intValue());
 		
 		domain.calledMethod = null;
 		Assert.assertTrue(commandProcessor.process(new String[]{"add", "attribute", "14"}));
@@ -108,11 +108,11 @@ public class CommandProcessorTest {
 	public void changeAttributeTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"change", "attribute", "16", NAME, TYPE, STRING, "17"}));
 		Assert.assertEquals("updateAttribute", domain.calledMethod);
-		Assert.assertEquals(16, domain.attribute.getId());
-		Assert.assertEquals(NAME, domain.attribute.getName());
-		Assert.assertEquals(TYPE, domain.attribute.getType());
-		Assert.assertEquals(STRING, domain.attribute.getStringValue());
-		Assert.assertEquals(17, domain.attribute.getIntegerValue().intValue());
+		Assert.assertEquals(16, domain.attribute.id());
+		Assert.assertEquals(NAME, domain.attribute.name());
+		Assert.assertEquals(TYPE, domain.attribute.type());
+		Assert.assertEquals(STRING, domain.attribute.stringValue());
+		Assert.assertEquals(17, domain.attribute.integerValue().intValue());
 		
 		domain.calledMethod = null;
 		Assert.assertTrue(commandProcessor.process(new String[]{"change", "attribute", "16"}));

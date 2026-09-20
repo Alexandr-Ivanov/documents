@@ -47,7 +47,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public long addAttribute(DocumentAttribute attribute) throws SQLException {
-		final long documentId = attribute.getDocumentId();
+		final long documentId = attribute.documentId();
 		
 		if (0 > documentId) {
 			throw new IllegalArgumentException("no document id");
@@ -57,13 +57,13 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 			throw new IllegalArgumentException("no document with this documentId");
 		}
 		
-		final String name = attribute.getName();
+		final String name = attribute.name();
 		
 		if (null == name || name.isEmpty()) {
 			throw new IllegalArgumentException("attribute name is undefined");
 		}
 		
-		final String type = attribute.getType();
+		final String type = attribute.type();
 		
 		if (null == type || type.isEmpty()) {
 			throw new IllegalArgumentException("attribute type is undefined");
@@ -73,8 +73,8 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		preparedStatement.setLong(1, documentId);
 		preparedStatement.setString(2, name);
 		preparedStatement.setString(3, type);
-		preparedStatement.setString(4, attribute.getStringValue());		
-		final Integer integerValue = attribute.getIntegerValue();
+		preparedStatement.setString(4, attribute.stringValue());
+		final Integer integerValue = attribute.integerValue();
 		
 		if (null != integerValue) {
 			preparedStatement.setInt(5, integerValue);
@@ -140,11 +140,8 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#createDocumentAttribute()
 	 */
 	@Override
-	public DocumentAttribute createDocumentAttribute() {
-		final DocumentAttribute attribute = new DocumentAttribute();
-		attribute.setId(-1);
-		attribute.setDocumentId(-1);
-		return attribute;
+	public DocumentAttribute createDocumentAttribute(long documentId, String name, String type, String stringValue, Integer integerValue) {
+        return new DocumentAttribute(-1, documentId, name, type, stringValue, integerValue);
 	}
 	
 	/* (non-Javadoc)
@@ -204,14 +201,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 * @throws SQLException
 	 */
 	private DocumentAttribute getAttribute(final ResultSet resultSet) throws SQLException {
-		DocumentAttribute attribute = createDocumentAttribute();
-		attribute.setId(resultSet.getLong(1));
-		attribute.setDocumentId(resultSet.getLong(2));
-		attribute.setName(resultSet.getString(3));
-		attribute.setType(resultSet.getString(4));
-		attribute.setString(resultSet.getString(5));
-		attribute.setInteger((Integer) resultSet.getObject(6));
-		return attribute;
+        return new DocumentAttribute(resultSet.getLong(1), resultSet.getLong(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), (Integer) resultSet.getObject(6));
 	}
 
 	/* (non-Javadoc)
@@ -325,13 +315,13 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void updateAttribute(DocumentAttribute attribute) throws SQLException {
-		final String name = attribute.getName();
+		final String name = attribute.name();
 		
 		if (null == name || name.isEmpty()) {
 			throw new IllegalArgumentException("attribute name is undefined");
 		}
 		
-		final String type = attribute.getType();
+		final String type = attribute.type();
 		
 		if (null == type || type.isEmpty()) {
 			throw new IllegalArgumentException("attribute type is undefined");
@@ -340,8 +330,8 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ATTRIBUTE);
 		preparedStatement.setString(1, name);
 		preparedStatement.setString(2, type);
-		preparedStatement.setString(3, attribute.getStringValue());
-		final Integer integerValue = attribute.getIntegerValue();
+		preparedStatement.setString(3, attribute.stringValue());
+		final Integer integerValue = attribute.integerValue();
 		
 		if (null != integerValue) {
 			preparedStatement.setInt(4, integerValue);
@@ -349,7 +339,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 			preparedStatement.setNull(4, Types.INTEGER);
 		}
 
-		preparedStatement.setLong(5, attribute.getId());
+		preparedStatement.setLong(5, attribute.id());
 		preparedStatement.executeUpdate();
 	}
 	

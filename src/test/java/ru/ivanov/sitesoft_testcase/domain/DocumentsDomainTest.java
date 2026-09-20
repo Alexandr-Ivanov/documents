@@ -100,7 +100,7 @@ public class DocumentsDomainTest {
 		final List<DocumentAttribute> attributes = domain.getDocumentAttributes(newId);
 		Assert.assertTrue("new document has no attributes", attributes.isEmpty());
 		
-		final DocumentAttribute attribute = domain.createDocumentAttribute();
+		DocumentAttribute attribute = domain.createDocumentAttribute(-1, null, null, null, null);
 
 		try {
 			domain.addAttribute(attribute);
@@ -109,41 +109,35 @@ public class DocumentsDomainTest {
 		}
 		
 		try {
-			attribute.setDocumentId(newId);
+			attribute = domain.createDocumentAttribute(newId, null, null, null, null);
 			domain.addAttribute(attribute);
 			Assert.fail("added attribute without name, type");
 		} catch (Exception e) {
 		}
-		
-		attribute.setName(NAME);
-		attribute.setType(TYPE);
-		attribute.setString(STRING_VALUE);
+
+		attribute = domain.createDocumentAttribute(newId, NAME, TYPE, STRING_VALUE, null);
 		long attributeId = domain.addAttribute(attribute);
 		Assert.assertTrue("attribute id is positive", 0 < attributeId);
 		
 		final DocumentAttribute gainedAttribute = domain.getDocumentAttribute(attributeId);
 		Assert.assertNotNull("attribute was found", gainedAttribute);
-		Assert.assertEquals(attributeId, gainedAttribute.getId());
-		Assert.assertEquals(newId, gainedAttribute.getDocumentId());
-		Assert.assertEquals(NAME, gainedAttribute.getName());
-		Assert.assertEquals(TYPE, gainedAttribute.getType());
-		Assert.assertEquals(STRING_VALUE, gainedAttribute.getStringValue());
-		Assert.assertNull(gainedAttribute.getIntegerValue());
+		Assert.assertEquals(attributeId, gainedAttribute.id());
+		Assert.assertEquals(newId, gainedAttribute.documentId());
+		Assert.assertEquals(NAME, gainedAttribute.name());
+		Assert.assertEquals(TYPE, gainedAttribute.type());
+		Assert.assertEquals(STRING_VALUE, gainedAttribute.stringValue());
+		Assert.assertNull(gainedAttribute.integerValue());
 		
 		final List<DocumentAttribute> attributes2 = domain.getDocumentAttributes(newId);
 		Assert.assertEquals("document has one attributes", 1, attributes2.size());
 		
-		final DocumentAttribute attribute2 = domain.createDocumentAttribute();
-		attribute2.setDocumentId(newId);
-		attribute2.setName(NAME);
-		attribute2.setType(TYPE);
-		attribute2.setInteger(1);
+		final DocumentAttribute attribute2 = domain.createDocumentAttribute(newId, NAME, TYPE, null, 1);
 		long attribute2Id = domain.addAttribute(attribute2);
 		Assert.assertTrue("second id greater", attributeId < attribute2Id);
 		
 		final DocumentAttribute gainedAttribute2 = domain.getDocumentAttribute(attribute2Id);
-		Assert.assertNull(gainedAttribute2.getStringValue());
-		Assert.assertEquals(1, gainedAttribute2.getIntegerValue().intValue());
+		Assert.assertNull(gainedAttribute2.stringValue());
+		Assert.assertEquals(1, gainedAttribute2.integerValue().intValue());
 		
 		final List<DocumentAttribute> attributes3 = domain.getDocumentAttributes(newId);
 		Assert.assertEquals("document has two attributes", 2, attributes3.size());
@@ -154,17 +148,13 @@ public class DocumentsDomainTest {
 		Assert.assertEquals("one attribute remains", 1, attributes4.size());
 		
 		final DocumentAttribute attribute3 = attributes4.getFirst();
-		attribute3.setName(NAME_1);
-		attribute3.setType(TYPE_1);
-		attribute3.setString(STRING_VALUE_1);
-		attribute3.setInteger(2);
-		domain.updateAttribute(attribute3);
+		domain.updateAttribute(new DocumentAttribute(attribute3.id(), attribute3.documentId(), NAME_1, TYPE_1, STRING_VALUE_1, 2));
 		
-		final DocumentAttribute gainedAttribute3 = domain.getDocumentAttribute(attribute3.getId());
-		Assert.assertEquals(NAME_1, gainedAttribute3.getName());
-		Assert.assertEquals(TYPE_1, gainedAttribute3.getType());
-		Assert.assertEquals(STRING_VALUE_1, gainedAttribute3.getStringValue());
-		Assert.assertEquals(2, gainedAttribute3.getIntegerValue().intValue());
+		final DocumentAttribute gainedAttribute3 = domain.getDocumentAttribute(attribute3.id());
+		Assert.assertEquals(NAME_1, gainedAttribute3.name());
+		Assert.assertEquals(TYPE_1, gainedAttribute3.type());
+		Assert.assertEquals(STRING_VALUE_1, gainedAttribute3.stringValue());
+		Assert.assertEquals(2, gainedAttribute3.integerValue().intValue());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -176,10 +166,7 @@ public class DocumentsDomainTest {
 			documentId++;
 		}
 		
-		DocumentAttribute attribute = domain.createDocumentAttribute();
-		attribute.setDocumentId(documentId);
-		attribute.setName(NAME);
-		attribute.setType(TYPE);
+		DocumentAttribute attribute = domain.createDocumentAttribute(documentId, NAME, TYPE, "", null);
 		domain.addAttribute(attribute);
 	}
 	
@@ -189,10 +176,7 @@ public class DocumentsDomainTest {
 		long id = domain.addDocument(document);
 		Assert.assertNotNull(domain.getDocument(id));
 		
-		DocumentAttribute attribute = domain.createDocumentAttribute();
-		attribute.setDocumentId(id);
-		attribute.setName(NAME);
-		attribute.setType(TYPE);
+		DocumentAttribute attribute = domain.createDocumentAttribute(id, NAME, TYPE, "", null);
 		domain.addAttribute(attribute);
 		Assert.assertFalse(domain.getDocumentAttributes(id).isEmpty());
 		

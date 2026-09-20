@@ -43,8 +43,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	@Override
 	public long addAttribute(DocumentAttribute attribute) {
 		maxDocumentAttributeId++;
-		attribute.setId(maxDocumentAttributeId);
-		this.attribute = attribute;
+		this.attribute = new DocumentAttribute(maxDocumentAttributeId, attribute.documentId(), attribute.name(), attribute.type(), attribute.stringValue(), attribute.integerValue());
 		calledMethod = "addAttribute";
 		return maxDocumentAttributeId;
 	}
@@ -71,8 +70,8 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#createDocumentAttribute()
 	 */
 	@Override
-	public DocumentAttribute createDocumentAttribute() {
-		return new DocumentAttribute();
+	public DocumentAttribute createDocumentAttribute(long documentId, String name, String type, String stringValue, Integer integerValue) {
+		return new DocumentAttribute(-1, documentId, name, type, stringValue, integerValue);
 	}
 
 	/* (non-Javadoc)
@@ -90,11 +89,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	 */
 	@Override
 	public DocumentAttribute getDocumentAttribute(long attributeId) {
-		final DocumentAttribute documentAttribute = createDocumentAttribute();
-		documentAttribute.setId(attributeId);
-		documentAttribute.setName("name");
-		documentAttribute.setType("type");
-		return documentAttribute;
+        return new DocumentAttribute(attributeId, 1, "name", "type", "", null);
 	}
 
 	/* (non-Javadoc)
@@ -105,13 +100,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 		calledMethod = "getDocumentAttributes";
 		this.documentId = documentId; 
 		List<DocumentAttribute> attributes = new ArrayList<>();
-		final DocumentAttribute attribute = createDocumentAttribute();
-		attribute.setDocumentId(documentId);
-		attribute.setId(1);
-		attribute.setInteger(2);
-		attribute.setName("name");
-		attribute.setString("string");
-		attribute.setType("type");
+		final DocumentAttribute attribute = new DocumentAttribute(1, documentId, "name", "type", "string", 2);
 		attributes.add(attribute);
 		return attributes;
 	}

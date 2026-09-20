@@ -117,17 +117,9 @@ public class CommandProcessor {
 			return;
 		}
 		
-		attribute.setName(args[3]);
-		attribute.setType(args[4]);
-		attribute.setString(args[5]);
-		
-		if (6 < args.length && !args[6].isEmpty()) {
-			attribute.setInteger(Integer.parseInt(args[6]));
-		} else {
-			attribute.setInteger(null);
-		}
-		
-		documentsDomain.updateAttribute(attribute);
+		Integer newInteger = 6 < args.length && !args[6].isEmpty() ? Integer.parseInt(args[6]) : null;
+
+		documentsDomain.updateAttribute(new DocumentAttribute(attribute.id(), attribute.documentId(), args[3], args[4], args[5], newInteger));
 	}
 
 	private void getAttributes(String[] args) {
@@ -148,7 +140,7 @@ public class CommandProcessor {
 	}
 
 	private void printAttribute(DocumentAttribute attribute) {
-		System.out.println(MessageFormat.format("id: {0}; documentId: {1}; name: {2}; type: {3}; string: {4}; integer: {5}.", attribute.getId(), attribute.getDocumentId(), attribute.getName(), attribute.getType(), attribute.getStringValue(), attribute.getIntegerValue()));
+		System.out.println(MessageFormat.format("id: {0}; documentId: {1}; name: {2}; type: {3}; string: {4}; integer: {5}.", attribute.id(), attribute.documentId(), attribute.name(), attribute.type(), attribute.stringValue(), attribute.integerValue()));
 	}
 
 	private void processRemove(String[] args) {
@@ -253,17 +245,9 @@ public class CommandProcessor {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
-		
-		final DocumentAttribute attribute = documentsDomain.createDocumentAttribute();
-		attribute.setDocumentId(Long.parseLong(args[2]));
-		attribute.setName(args[3]);
-		attribute.setType(args[4]);
-		attribute.setString(args[5]);
-		
-		if (6 < args.length && !args[6].isEmpty()) {
-			attribute.setInteger(Integer.parseInt(args[6]));
-		}
-		
+
+		Integer newInteger = 6 < args.length && !args[6].isEmpty() ? Integer.parseInt(args[6]) : null;
+		final DocumentAttribute attribute = documentsDomain.createDocumentAttribute(Long.parseLong(args[2]), args[3], args[4], args[5], newInteger);
 		documentsDomain.addAttribute(attribute);
 	}
 

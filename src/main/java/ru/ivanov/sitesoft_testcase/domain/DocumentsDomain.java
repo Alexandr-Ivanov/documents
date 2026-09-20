@@ -42,7 +42,7 @@ public interface DocumentsDomain {
 	 * Создать новый пустой атрибут
 	 * @return новый пустой атрибут с id = -1, documentId = -1 
 	 */
-	DocumentAttribute createDocumentAttribute();
+	DocumentAttribute createDocumentAttribute(long documentId, String name, String type, String stringValue, Integer integerValue);
 
 	/**
 	 * Получить документ по идентификатору
