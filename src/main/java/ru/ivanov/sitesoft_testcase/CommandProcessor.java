@@ -150,25 +150,23 @@ public class CommandProcessor {
 		}
 		
 		switch (args[1]) {
-		case "attribute":
+		case "attribute" -> {
 			try {
 				processRemoveAttribute(args);
 			} catch (SQLException | NumberFormatException e) {
 				e.printStackTrace();
 			}
-			
-			break;
+		}
 						
-		case "document":
+		case "document" -> {
 			try {
 				processRemoveDocument(args);
 			} catch (SQLException | NumberFormatException e) {
 				e.printStackTrace();
 			}
+		}
 			
-			break;
-			
-		default:
+		default ->
 			System.out.println(UNKNOWN_COMMAND);	
 		}		
 	}
@@ -217,25 +215,23 @@ public class CommandProcessor {
 		}
 		
 		switch (args[1]) {
-		case "document":
+		case "document" -> {
 			try {
 				processAddDocument(args);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
 			
-			break;
-			
-		case "attribute":
+		case "attribute" -> {
 			try {
 				processAddAttribute(args);
 			} catch (NumberFormatException | SQLException e) {
 				e.printStackTrace();
 			}
+		}
 			
-			break;
-			
-		default:
+		default ->
 			System.out.println(UNKNOWN_COMMAND);	
 		}
 	}
