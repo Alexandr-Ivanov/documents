@@ -21,11 +21,11 @@ import ru.ivanov.sitesoft_testcase.domain.DocumentsDomain;
  * @author Alexandr Ivanov
  *
  */
-public class CommandProcessor {
+class CommandProcessor {
 
 
 
-	public CommandProcessor(DocumentsDomain domain) {
+	CommandProcessor(DocumentsDomain domain) {
 		this.documentsDomain = domain;
 	}
 
@@ -34,7 +34,7 @@ public class CommandProcessor {
 	 * @param args
 	 * @return true, пока работа не закончена, false, если команда на выход
 	 */
-	public boolean process(String[] args) {
+	boolean process(String[] args) {
 		if (0 == args.length) {
 			return true;
 		}
