@@ -6,6 +6,7 @@ package ru.ivanov.sitesoft_testcase.domain;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 /**
@@ -70,11 +71,10 @@ public interface DocumentsDomain {
 
 	/**
 	 * Получить содержимое документа
-	 * @param id
-	 * @return содержимое документа
+	 * @param id documentId
 	 * @throws SQLException
 	 */
-	InputStream getDocumentContent(long id) throws SQLException;
+	void putDocumentContentIntoOutputStream(long id, OutputStream outputStream) throws SQLException, IOException;
 
 	/**
 	 * получить список документов, отсортированных по индексу

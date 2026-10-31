@@ -135,7 +135,7 @@ public class CommandProcessorTest {
 		domain.content = STRING.getBytes();
 		Path path = Files.createTempFile(null, null);
 		Assert.assertTrue(commandProcessor.process(new String[]{"content", "19", path.toString()}));
-		Assert.assertEquals("getDocumentContent", domain.calledMethod);
+		Assert.assertEquals("putDocumentContentIntoOutputStream", domain.calledMethod);
 		Assert.assertEquals(STRING, new String(Files.readAllBytes(path)));
 		
 		domain.calledMethod = null;

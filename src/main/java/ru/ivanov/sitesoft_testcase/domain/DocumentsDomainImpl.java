@@ -3,10 +3,7 @@
  */
 package ru.ivanov.sitesoft_testcase.domain;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -39,6 +36,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void cleanup() throws SQLException {
+		statement.close();
 		connection.close();
 	}
 
@@ -116,12 +114,14 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 			statement.execute("DROP TABLE 'documents';");
 		} catch (SQLiteException e) {
 			// if no such table exists
+			System.out.println("Warning: " + e.getMessage());
 		}
 		
 		try {
 			statement.execute("DROP TABLE 'documentAttributes';");
 		} catch (SQLiteException e) {
 			// if no such table exists
+			System.out.println("Warning: " + e.getMessage());
 		}
 		
 		statement.execute("CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);");
@@ -204,20 +204,27 @@ public class DocumentsDomainImpl implements DocumentsDomain {
         return new DocumentAttribute(resultSet.getLong(1), resultSet.getLong(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), (Integer) resultSet.getObject(6));
 	}
 
-	/* (non-Javadoc)
-	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocumentContent(long)
-	 */
 	@Override
-	public InputStream getDocumentContent(long id) throws SQLException {
-		final PreparedStatement preparedStatement = connection.prepareStatement(GET_DOCUMENT_CONTENT);
-		preparedStatement.setLong(1, id);
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		
-		if (resultSet.next()) {
-			return resultSet.getBinaryStream(1);
+	public void putDocumentContentIntoOutputStream(long id, OutputStream outputStream) throws SQLException, IOException {
+		try (final var preparedStatement = connection.prepareStatement(GET_DOCUMENT_CONTENT);) {
+			preparedStatement.setLong(1, id);
+			final var resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				var is = resultSet.getBinaryStream(1);
+				byte[] buffer = new byte[4 * 1024];
+
+				if (null != is) {
+					int read;
+
+					while (0 < (read = is.read(buffer))) {
+						outputStream.write(buffer, 0, read);
+					}
+				}
+			} else {
+				throw new IOException("No such document");
+			}
 		}
-		
-		return null;
 	}
 
 	/* (non-Javadoc)
@@ -287,15 +294,15 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void setDocumentContent(long documentId, InputStream inputStream) throws SQLException, IOException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024 * 1024];
+		var os = new ByteArrayOutputStream();
+		var buffer = new byte[4 * 1024];
 		int len;
-		
+
 		while (0 < (len = inputStream.read(buffer))) {
 			os.write(buffer, 0, len);
 		}
-		
-		final byte[] byteArray = os.toByteArray();
+
+		final var byteArray = os.toByteArray();
 		setDocumentContent(documentId, byteArray);
 	}
 
@@ -304,10 +311,11 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void setDocumentContent(long documentId, final byte[] bytes) throws SQLException {
-		final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_DOCUMENT_CONTENT);
-		preparedStatement.setBytes(1, bytes);
-		preparedStatement.setLong(2, documentId);
-		preparedStatement.executeUpdate();
+		try(final var preparedStatement = connection.prepareStatement(UPDATE_DOCUMENT_CONTENT);) {
+			preparedStatement.setBytes(1, bytes);
+			preparedStatement.setLong(2, documentId);
+			preparedStatement.executeUpdate();
+		}
 	}
 	
 	/* (non-Javadoc)

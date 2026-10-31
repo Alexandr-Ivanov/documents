@@ -3,9 +3,7 @@
  */
 package ru.ivanov.sitesoft_testcase.domain;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -81,16 +79,14 @@ public class DocumentsDomainTest {
 		Assert.assertTrue("id must be greater then 0", 0 < newId);
 		byte[] bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 		domain.setDocumentContent(newId, new ByteArrayInputStream(bytes));
+
+        var outputStream = new ByteArrayOutputStream();
+		domain.putDocumentContentIntoOutputStream(newId, outputStream);
+		Assert.assertNotNull("content", outputStream);
 		
-		InputStream inputStream = domain.getDocumentContent(newId);
-		Assert.assertNotNull("content", inputStream);
-		
-		byte[] newBytes = new byte[bytes.length];
-		int len = inputStream.read(newBytes);
-		Assert.assertEquals("read bytes number",bytes.length, len);
+		var newBytes = outputStream.toByteArray();
+        Assert.assertEquals("read bytes number", bytes.length, newBytes.length);
 		Assert.assertArrayEquals("read bytes", bytes, newBytes);
-		
-		Assert.assertEquals("end of stream", -1, inputStream.read());
 	}
 	
 	@Test

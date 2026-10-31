@@ -3,11 +3,8 @@
  */
 package ru.ivanov.sitesoft_testcase;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,13 +102,10 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 		return attributes;
 	}
 
-	/* (non-Javadoc)
-	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#getDocumentContent(long)
-	 */
 	@Override
-	public InputStream getDocumentContent(long id) {
-		calledMethod = "getDocumentContent";
-		return new ByteArrayInputStream(content);
+	public void putDocumentContentIntoOutputStream(long id, OutputStream outputStream) throws IOException {
+        calledMethod = "putDocumentContentIntoOutputStream";
+		outputStream.write(content);
 	}
 
 	/* (non-Javadoc)
