@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +205,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 
 	@Override
 	public void putDocumentContentIntoOutputStream(long id, OutputStream outputStream) throws SQLException, IOException {
-		try (final var preparedStatement = connection.prepareStatement(GET_DOCUMENT_CONTENT);) {
+		try (final var preparedStatement = connection.prepareStatement(GET_DOCUMENT_CONTENT)) {
 			preparedStatement.setLong(1, id);
 			final var resultSet = preparedStatement.executeQuery();
 
@@ -313,7 +312,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void setDocumentContent(long documentId, final byte[] bytes) throws SQLException {
-		try(final var preparedStatement = connection.prepareStatement(UPDATE_DOCUMENT_CONTENT);) {
+		try(final var preparedStatement = connection.prepareStatement(UPDATE_DOCUMENT_CONTENT)) {
 			preparedStatement.setBytes(1, bytes);
 			preparedStatement.setLong(2, documentId);
 			preparedStatement.executeUpdate();
@@ -358,7 +357,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		final boolean oldAutoCommit = connection.getAutoCommit();
 		
 		try (final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ATTRIBUTES_FOR_DOCUMENT);
-			 final PreparedStatement preparedStatement2 = connection.prepareStatement(DELETE_DOCUMENT);){
+			 final PreparedStatement preparedStatement2 = connection.prepareStatement(DELETE_DOCUMENT)){
 			connection.setAutoCommit(false);
 			preparedStatement.setLong(1, documentId);
 			preparedStatement.execute();
