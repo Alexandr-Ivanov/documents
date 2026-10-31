@@ -28,7 +28,6 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 
 	public DocumentsDomainImpl(String databaseName) throws SQLException {
 		connection = DriverManager.getConnection("jdbc:sqlite:/var/db/" + databaseName);
-		statement = connection.createStatement();
 	}
 	
 	/* (non-Javadoc)
@@ -36,7 +35,6 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void cleanup() throws SQLException {
-		statement.close();
 		connection.close();
 	}
 
@@ -110,22 +108,24 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void createDatabase() throws SQLException {
-		try {
-			statement.execute("DROP TABLE 'documents';");
-		} catch (SQLiteException e) {
-			// if no such table exists
-			System.out.println("Warning: " + e.getMessage());
+		try (var statement = connection.createStatement()) {
+			try {
+				statement.execute("DROP TABLE 'documents';");
+			} catch (SQLiteException e) {
+				// if no such table exists
+				System.out.println("Warning: " + e.getMessage());
+			}
+
+			try {
+				statement.execute("DROP TABLE 'documentAttributes';");
+			} catch (SQLiteException e) {
+				// if no such table exists
+				System.out.println("Warning: " + e.getMessage());
+			}
+
+			statement.execute("CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);");
+			statement.execute("CREATE TABLE 'documentAttributes' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'documentId' INTEGER NOT NULL, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'stringValue' TEXT, 'integerValue' INTEGER);");
 		}
-		
-		try {
-			statement.execute("DROP TABLE 'documentAttributes';");
-		} catch (SQLiteException e) {
-			// if no such table exists
-			System.out.println("Warning: " + e.getMessage());
-		}
-		
-		statement.execute("CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);");
-		statement.execute("CREATE TABLE 'documentAttributes' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'documentId' INTEGER NOT NULL, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'stringValue' TEXT, 'integerValue' INTEGER);");
 	}
 
 	/* (non-Javadoc)
@@ -232,15 +232,17 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public List<Document> getDocumentsList() throws SQLException {
-		List<Document> result = new ArrayList<>();
-		final ResultSet resultSet = statement.executeQuery(SELECT_DOCUMENTS);
-		
-		while (resultSet.next()) {
-			Document document = getDocument(resultSet);
-			result.add(document);
+		try (var statement = connection.createStatement()) {
+			List<Document> result = new ArrayList<>();
+			final ResultSet resultSet = statement.executeQuery(SELECT_DOCUMENTS);
+
+			while (resultSet.next()) {
+				Document document = getDocument(resultSet);
+				result.add(document);
+			}
+
+			return result;
 		}
-		
-		return result;
 	}
 
 	/**
@@ -355,13 +357,12 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	public void removeDocument(long documentId) throws SQLException {
 		final boolean oldAutoCommit = connection.getAutoCommit();
 		
-		try {
+		try (final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ATTRIBUTES_FOR_DOCUMENT);
+			 final PreparedStatement preparedStatement2 = connection.prepareStatement(DELETE_DOCUMENT);){
 			connection.setAutoCommit(false);
-			final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ATTRIBUTES_FOR_DOCUMENT);
 			preparedStatement.setLong(1, documentId);
 			preparedStatement.execute();
-			
-			final PreparedStatement preparedStatement2 = connection.prepareStatement(DELETE_DOCUMENT);
+
 			preparedStatement2.setLong(1, documentId);
 			preparedStatement2.execute();
 			connection.commit();
@@ -371,7 +372,6 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	}
 	
 	private final Connection connection;
-	private final Statement statement;
 	private static final String INSERT_INTO_DOCUMENTS = "INSERT INTO documents (name,type) VALUES (?,?);";
 	private static final String UPDATE_DOCUMENT_CONTENT = "UPDATE documents SET content=? WHERE id=?";
 	private static final String GET_ATTRIBUTES_FOR_DOCUMENT = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes where documentId=?";
