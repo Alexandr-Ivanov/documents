@@ -195,7 +195,7 @@ class CommandProcessor {
 				printDocument(document);
 			}
 		} catch (NumberFormatException | SQLException e) {
-			e.printStackTrace();
+			System.out.print(e.getMessage());
 		}
 	}
 
@@ -217,8 +217,8 @@ class CommandProcessor {
 		case "attribute" -> {
 			try {
 				processAddAttribute(args);
-			} catch (NumberFormatException | SQLException e) {
-				e.printStackTrace();
+			} catch (SQLException | IllegalArgumentException e) {
+				System.out.println(e.getMessage());
 			}
 		}
 			

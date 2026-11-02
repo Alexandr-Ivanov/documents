@@ -180,17 +180,18 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public List<DocumentAttribute> getDocumentAttributes(long documentId) throws SQLException {
-		List<DocumentAttribute> result = new ArrayList<>();
-		final PreparedStatement preparedStatement = connection.prepareStatement(GET_ATTRIBUTES_FOR_DOCUMENT);
-		preparedStatement.setLong(1, documentId);
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		
-		while (resultSet.next()) {
-			DocumentAttribute attribute = getAttribute(resultSet);
-			result.add(attribute);
+		var result = new ArrayList<DocumentAttribute>();
+		try (final var preparedStatement = connection.prepareStatement(GET_ATTRIBUTES_FOR_DOCUMENT)) {
+			preparedStatement.setLong(1, documentId);
+			final var resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				var attribute = getAttribute(resultSet);
+				result.add(attribute);
+			}
+
+			return result;
 		}
-		
-		return result;
 	}
 
 	/**
@@ -269,25 +270,26 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public long addDocument(Document document) throws SQLException {
-		final String name = document.name();
+		final var name = document.name();
 		
 		if (null == name || name.isEmpty()) {
 			throw new IllegalArgumentException("document name is undefined");
 		}
 		
-		final String type = document.type();
+		final var type = document.type();
 		
 		if (null == type || type.isEmpty()) {
 			throw new IllegalArgumentException("document type is undefined");
 		}
-		
-		final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_INTO_DOCUMENTS);
-		preparedStatement.setString(1, name);
-		preparedStatement.setString(2, type);
-		preparedStatement.executeUpdate();
-		
-		final ResultSet resultSet = preparedStatement.getGeneratedKeys();
-        return resultSet.getLong(1);
+
+		try (final var preparedStatement = connection.prepareStatement(INSERT_INTO_DOCUMENTS)) {
+			preparedStatement.setString(1, name);
+			preparedStatement.setString(2, type);
+			preparedStatement.executeUpdate();
+
+			final var resultSet = preparedStatement.getGeneratedKeys();
+			return resultSet.getLong(1);
+		}
 	}
 	
 	/* (non-Javadoc)
