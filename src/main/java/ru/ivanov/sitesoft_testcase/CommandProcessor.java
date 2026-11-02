@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
@@ -239,7 +238,7 @@ class CommandProcessor {
 	}
 
 	/**[
-	 * @param args
+	 * @param args Input string split by spaces
 	 * @throws SQLException 
 	 */
 	private void processAddDocument(String[] args) throws SQLException {
@@ -271,7 +270,7 @@ class CommandProcessor {
 	}
 
 	/**
-	 * @param document
+	 * @param document Document to print out
 	 */
 	private void printDocument(Document document) {
 		System.out.println(MessageFormat.format("id: {0}; name: {1}, type: {2}.", document.id(), document.name(), document.type()));
