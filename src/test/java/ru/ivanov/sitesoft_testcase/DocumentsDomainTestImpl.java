@@ -129,7 +129,6 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addDocument(ru.ivanov.sitesoft_testcase.domain.Document)
 	 */
-	@Override
 	public long addDocument(Document document) {
 		calledMethod = "addDocument";
 		maxDocumentId++;
@@ -144,7 +143,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	public void setDocumentContent(long documentId, InputStream inputStream) throws IOException {
 		// TODO Auto-generated method stub
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024 * 1024];
+		byte[] buffer = new byte[4 * 1024];
 		int read;
 		
 		while (0 < (read = inputStream.read(buffer))) {
@@ -179,7 +178,7 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	}
 
 	@Override
-	public void addDocument(Document document, FileInputStream inputStream) throws IOException {
+	public void addDocument(Document document, InputStream inputStream) throws IOException {
 		setDocumentContent(addDocument(document), inputStream);
 	}
 

@@ -3,7 +3,6 @@
  */
 package ru.ivanov.sitesoft_testcase.domain;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -91,14 +90,6 @@ public interface DocumentsDomain {
 	void removeAttribute(long attributeId) throws SQLException;
 
 	/**
-	 * Добавить документ в базу данных
-	 * @param document
-	 * @return ID нового документа 
-	 * @throws SQLException
-	 */
-	long addDocument(Document document) throws SQLException;
-
-	/**
 	 * Присвоить содержимое документу
 	 * @param documentId
 	 * @param inputStream
@@ -136,6 +127,6 @@ public interface DocumentsDomain {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException;
+	void addDocument(Document document, InputStream inputStream) throws SQLException, IOException;
 
 }

@@ -89,7 +89,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addDocument(ru.ivanov.sitesoft_testcase.domain.Document, java.io.FileInputStream)
 	 */
 	@Override
-	public void addDocument(Document document, FileInputStream inputStream) throws SQLException, IOException {
+	public void addDocument(Document document, InputStream inputStream) throws SQLException, IOException {
 		final boolean oldAutoCommit = connection.getAutoCommit();
 		
 		try {
@@ -268,8 +268,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addDocument(ru.ivanov.sitesoft_testcase.domain.Document)
 	 */
-	@Override
-	public long addDocument(Document document) throws SQLException {
+	private long addDocument(Document document) throws SQLException {
 		final var name = document.name();
 		
 		if (null == name || name.isEmpty()) {
