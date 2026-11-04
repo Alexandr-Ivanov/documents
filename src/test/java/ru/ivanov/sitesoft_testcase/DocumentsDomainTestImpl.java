@@ -4,7 +4,6 @@
 package ru.ivanov.sitesoft_testcase;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
