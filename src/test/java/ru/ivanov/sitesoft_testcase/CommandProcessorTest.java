@@ -57,6 +57,16 @@ public class CommandProcessorTest {
 	}
 
 	@Test
+	public void changeContentTest() throws IOException {
+		final Path path = Files.createTempFile(null, null);
+		FileOutputStream outputStream = new FileOutputStream(path.toFile());
+		outputStream.write(STRING.getBytes());
+		outputStream.close();
+		Assert.assertTrue(commandProcessor.process(new String[]{"change", "content", "16", path.toString()}));
+		Assert.assertEquals("setDocumentContent", domain.calledMethod);
+	}
+
+	@Test
 	public void getDocumentTest() {
 		Assert.assertTrue(commandProcessor.process(new String[]{"document", "11"}));
 		Assert.assertEquals("getDocument", domain.calledMethod);

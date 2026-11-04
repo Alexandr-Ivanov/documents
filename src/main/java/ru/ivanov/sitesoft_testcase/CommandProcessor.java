@@ -30,7 +30,7 @@ class CommandProcessor {
 
 	/**
 	 * Обработать команду
-	 * @param args
+	 * @param args input string split by spaces
 	 * @return true, пока работа не закончена, false, если команда на выход
 	 */
 	boolean process(String[] args) {
@@ -83,34 +83,56 @@ class CommandProcessor {
 			return;
 		}
 
-        if (args[1].equals("attribute")) {
-            try {
-                changeAttribute(args);
-            } catch (NumberFormatException | SQLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println(UNKNOWN_COMMAND);
-        }
+		switch (args[1]) {
+            case "attribute" -> changeAttribute(args);
+			case "content" -> changeContent(args);
+            default -> System.out.println(UNKNOWN_COMMAND);
+		}
 	}
 
-	private void changeAttribute(String[] args) throws NumberFormatException, SQLException {
+	private void changeContent(String[] args) {
+		if (4 > args.length) {
+			System.out.println(TOO_FEW_ARGUMENTS);
+			return;
+		}
+
+		var fileName = args[3];
+
+		try (var inputStream = new FileInputStream(fileName)){
+			var documentId = Long.parseLong(args[2]);
+			documentsDomain.setDocumentContent(documentId, inputStream);
+		} catch (NumberFormatException _) {
+			System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
+		} catch (FileNotFoundException _) {
+            System.out.println("File not found: " + fileName);
+        } catch (IOException | SQLException e) {
+            System.out.println("Failed to change content: " + e.getMessage());
+        }
+    }
+
+	private void changeAttribute(String[] args) {
 		if (6 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
-		
-		final DocumentAttribute attribute = documentsDomain.getDocumentAttribute(Long.parseLong(args[2]));
-		
-		if (null == attribute) {
-			System.out.println(MessageFormat.format("No attribute with id={0}.", args[2]));
-			return;
-		}
-		
-		Integer newInteger = 6 < args.length && !args[6].isEmpty() ? Integer.parseInt(args[6]) : null;
 
-		documentsDomain.updateAttribute(new DocumentAttribute(attribute.id(), attribute.documentId(), args[3], args[4], args[5], newInteger));
-	}
+        try {
+            final DocumentAttribute attribute = documentsDomain.getDocumentAttribute(Long.parseLong(args[2]));
+
+            if (null == attribute) {
+                System.out.println(MessageFormat.format("No attribute with id={0}.", args[2]));
+                return;
+            }
+
+            Integer newInteger = 6 < args.length && !args[6].isEmpty() ? Integer.parseInt(args[6]) : null;
+
+            documentsDomain.updateAttribute(new DocumentAttribute(attribute.id(), attribute.documentId(), args[3], args[4], args[5], newInteger));
+        } catch (SQLException e) {
+            System.out.println("Failed to change attribute: " + e.getMessage());
+        } catch (NumberFormatException _) {
+			System.out.println(MessageFormat.format("Invalid document attribute ID format: {0}. It must be a natural number.", args[2]));
+        }
+    }
 
 	private void getAttributes(String[] args) {
 		if (2 > args.length) {
@@ -239,8 +261,8 @@ class CommandProcessor {
 
 	/**[
 	 * @param args Input string split by spaces
-	 * @throws SQLException 
-	 */
+	 * {@code @throw} SQLException
+     */
 	private void processAddDocument(String[] args) throws SQLException {
 		if (5 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
