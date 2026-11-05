@@ -73,7 +73,7 @@ class CommandProcessor {
 		try {
 			documentsDomain.createDatabase();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Failed to initialize the database: " + e.getMessage());
 		}
 	}
 
@@ -99,8 +99,7 @@ class CommandProcessor {
 		var fileName = args[3];
 
 		try (var inputStream = new FileInputStream(fileName)){
-			var documentId = Long.parseLong(args[2]);
-			documentsDomain.setDocumentContent(documentId, inputStream);
+            documentsDomain.setDocumentContent(Long.parseLong(args[2]), inputStream);
 		} catch (NumberFormatException _) {
 			System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
 		} catch (FileNotFoundException _) {
@@ -146,10 +145,12 @@ class CommandProcessor {
 			for (DocumentAttribute attribute : documentAttributes) {
 				printAttribute(attribute);
 			}
-		} catch (NumberFormatException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
+		} catch (NumberFormatException _) {
+			System.out.println(MessageFormat.format("Invalid document attribute ID format: {0}. It must be a natural number.", args[2]));
+		} catch (SQLException e) {
+            System.out.println(MessageFormat.format("Failed to get attributes for document with Id {0}: {1}", args[1], e.getMessage()));
+        }
+    }
 
 	private void printAttribute(DocumentAttribute attribute) {
 		System.out.println(MessageFormat.format("id: {0}; documentId: {1}; name: {2}; type: {3}; string: {4}; integer: {5}.", attribute.id(), attribute.documentId(), attribute.name(), attribute.type(), attribute.stringValue(), attribute.integerValue()));
@@ -162,44 +163,41 @@ class CommandProcessor {
 		}
 		
 		switch (args[1]) {
-		case "attribute" -> {
-			try {
-				processRemoveAttribute(args);
-			} catch (SQLException | NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-						
-		case "document" -> {
-			try {
-				processRemoveDocument(args);
-			} catch (SQLException | NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-			
-		default ->
-			System.out.println(UNKNOWN_COMMAND);	
+		case "attribute" -> processRemoveAttribute(args);
+		case "document" -> processRemoveDocument(args);
+		default -> System.out.println(UNKNOWN_COMMAND);
 		}		
 	}
 
-	private void processRemoveAttribute(String[] args) throws NumberFormatException, SQLException {
+	private void processRemoveAttribute(String[] args) {
 		if (3 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
-		
-		documentsDomain.removeAttribute(Long.parseLong(args[2]));
-	}
 
-	private void processRemoveDocument(String[] args) throws SQLException, NumberFormatException {
+        try {
+            documentsDomain.removeAttribute(Long.parseLong(args[2]));
+        } catch (NumberFormatException _) {
+            System.out.println(MessageFormat.format("Invalid document attribute ID format: {0}. It must be a natural number.", args[2]));
+        } catch (SQLException e) {
+			System.out.println("Failed to remove attribute with Id " + args[2]);
+        }
+    }
+
+	private void processRemoveDocument(String[] args) {
 		if (3 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
-		
-		documentsDomain.removeDocument(Long.parseLong(args[2]));
-	}
+
+        try {
+            documentsDomain.removeDocument(Long.parseLong(args[2]));
+        } catch (SQLException e) {
+			System.out.println("Failed to remove document with Id " + args[2]);
+        } catch (NumberFormatException e) {
+			System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
+        }
+    }
 
 	private void getDocument(String[] args) {
 		if (2 > args.length) {
@@ -227,43 +225,40 @@ class CommandProcessor {
 		}
 		
 		switch (args[1]) {
-		case "document" -> {
-			try {
-				processAddDocument(args);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-			
-		case "attribute" -> {
-			try {
-				processAddAttribute(args);
-			} catch (SQLException | IllegalArgumentException e) {
-				System.out.println(e.getMessage());
-			}
-		}
-			
-		default ->
-			System.out.println(UNKNOWN_COMMAND);	
+		case "document" -> processAddDocument(args);
+		case "attribute" -> processAddAttribute(args);
+		default -> System.out.println(UNKNOWN_COMMAND);
 		}
 	}
 
-	private void processAddAttribute(String[] args) throws SQLException, NumberFormatException {
+	private void processAddAttribute(String[] args) {
 		if (6 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
 
-		Integer newInteger = 6 < args.length && !args[6].isEmpty() ? Integer.parseInt(args[6]) : null;
-		final DocumentAttribute attribute = documentsDomain.createDocumentAttribute(Long.parseLong(args[2]), args[3], args[4], args[5], newInteger);
-		documentsDomain.addAttribute(attribute);
-	}
+        try {
+			Integer newInteger = 6 < args.length && !args[6].isEmpty() ? Integer.parseInt(args[6]) : null;
+
+			try {
+				final DocumentAttribute attribute = documentsDomain.createDocumentAttribute(Long.parseLong(args[2]), args[3], args[4], args[5], newInteger);
+				documentsDomain.addAttribute(attribute);
+			} catch (NumberFormatException _) {
+				System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
+			} catch (SQLException e) {
+				System.out.println(MessageFormat.format("Failed to add attribute to document with Id {0}: {1}", args[2], e.getMessage()));
+			}
+		} catch (NumberFormatException _) {
+			System.out.println("Wrong format: " + args[6] + ". It must be a whole number.");
+		}
+
+    }
 
 	/**[
 	 * @param args Input string split by spaces
 	 * {@code @throw} SQLException
      */
-	private void processAddDocument(String[] args) throws SQLException {
+	private void processAddDocument(String[] args) {
 		if (5 > args.length) {
 			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
@@ -272,10 +267,8 @@ class CommandProcessor {
 		try (final FileInputStream inputStream = new FileInputStream(args[4])) {
 			final Document document = documentsDomain.createDocument(args[2], args[3]);
 			documentsDomain.addDocument(document, inputStream);
-		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (IOException | SQLException e) {
+			System.out.println("Failed to add new document: " + e.getMessage());
 		}		
 	}
 
@@ -287,7 +280,7 @@ class CommandProcessor {
 				printDocument(document);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Failed to get a list of documents: " + e.getMessage());
 		}
 	}
 
