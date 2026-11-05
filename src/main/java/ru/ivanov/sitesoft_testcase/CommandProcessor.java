@@ -21,8 +21,13 @@ import ru.ivanov.sitesoft_testcase.domain.DocumentsDomain;
  *
  */
 class CommandProcessor {
+	private static final String INVALID_DOCUMENT_ID_FORMAT = "Invalid document ID format: {0}. It must be a whole number.";
+	private static final String INVALID_DOCUMENT_ATTRIBUTE_ID_FORMAT = "Invalid document attribute ID format: {0}. It must be a whole number.";
 
+	private static final String TOO_FEW_ARGUMENTS = "Too few arguments.";
+	private static final String UNKNOWN_COMMAND = "Unknown command.";
 
+	private final DocumentsDomain documentsDomain;
 
 	CommandProcessor(DocumentsDomain domain) {
 		this.documentsDomain = domain;
@@ -79,7 +84,7 @@ class CommandProcessor {
 
 	private void processChange(String[] args) {
 		if (2 > args.length) {
-			System.out.println(UNKNOWN_COMMAND);
+			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
 
@@ -101,7 +106,7 @@ class CommandProcessor {
 		try (var inputStream = new FileInputStream(fileName)){
             documentsDomain.setDocumentContent(Long.parseLong(args[2]), inputStream);
 		} catch (NumberFormatException _) {
-			System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
+			System.out.println(MessageFormat.format(INVALID_DOCUMENT_ID_FORMAT, args[2]));
 		} catch (FileNotFoundException _) {
             System.out.println("File not found: " + fileName);
         } catch (IOException | SQLException e) {
@@ -129,7 +134,7 @@ class CommandProcessor {
         } catch (SQLException e) {
             System.out.println("Failed to change attribute: " + e.getMessage());
         } catch (NumberFormatException _) {
-			System.out.println(MessageFormat.format("Invalid document attribute ID format: {0}. It must be a natural number.", args[2]));
+			System.out.println(MessageFormat.format(INVALID_DOCUMENT_ATTRIBUTE_ID_FORMAT, args[2]));
         }
     }
 
@@ -146,7 +151,7 @@ class CommandProcessor {
 				printAttribute(attribute);
 			}
 		} catch (NumberFormatException _) {
-			System.out.println(MessageFormat.format("Invalid document attribute ID format: {0}. It must be a natural number.", args[2]));
+			System.out.println(MessageFormat.format(INVALID_DOCUMENT_ATTRIBUTE_ID_FORMAT, args[1]));
 		} catch (SQLException e) {
             System.out.println(MessageFormat.format("Failed to get attributes for document with Id {0}: {1}", args[1], e.getMessage()));
         }
@@ -158,7 +163,7 @@ class CommandProcessor {
 
 	private void processRemove(String[] args) {
 		if (2 > args.length) {
-			System.out.println(UNKNOWN_COMMAND);
+			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
 		
@@ -195,7 +200,7 @@ class CommandProcessor {
         } catch (SQLException e) {
 			System.out.println("Failed to remove document with Id " + args[2]);
         } catch (NumberFormatException e) {
-			System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
+			System.out.println(MessageFormat.format(INVALID_DOCUMENT_ID_FORMAT, args[2]));
         }
     }
 
@@ -213,14 +218,16 @@ class CommandProcessor {
 			} else {
 				printDocument(document);
 			}
-		} catch (NumberFormatException | SQLException e) {
-			System.out.print(e.getMessage());
-		}
-	}
+		} catch (NumberFormatException e) {
+			System.out.println(MessageFormat.format(INVALID_DOCUMENT_ID_FORMAT, args[1]));
+		} catch (SQLException e) {
+            System.out.println("Failed to get document with Id " + args[1]);
+        }
+    }
 
 	private void processAdd(String[] args) {
 		if (2 > args.length) {
-			System.out.println(UNKNOWN_COMMAND);
+			System.out.println(TOO_FEW_ARGUMENTS);
 			return;
 		}
 		
@@ -244,7 +251,7 @@ class CommandProcessor {
 				final DocumentAttribute attribute = documentsDomain.createDocumentAttribute(Long.parseLong(args[2]), args[3], args[4], args[5], newInteger);
 				documentsDomain.addAttribute(attribute);
 			} catch (NumberFormatException _) {
-				System.out.println(MessageFormat.format("Invalid document ID format: {0}. It must be a natural number.", args[2]));
+				System.out.println(MessageFormat.format(INVALID_DOCUMENT_ID_FORMAT, args[2]));
 			} catch (SQLException e) {
 				System.out.println(MessageFormat.format("Failed to add attribute to document with Id {0}: {1}", args[2], e.getMessage()));
 			}
@@ -290,9 +297,4 @@ class CommandProcessor {
 	private void printDocument(Document document) {
 		System.out.println(MessageFormat.format("id: {0}; name: {1}, type: {2}.", document.id(), document.name(), document.type()));
 	}
-
-	private static final String TOO_FEW_ARGUMENTS = "Too few arguments.";
-	private static final String UNKNOWN_COMMAND = "Unknown command.";
-	
-	private final DocumentsDomain documentsDomain;
 }
