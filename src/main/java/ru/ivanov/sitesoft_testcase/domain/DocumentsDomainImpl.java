@@ -260,9 +260,10 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	 */
 	@Override
 	public void removeAttribute(long attributeId) throws SQLException {
-		final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ATTRIBUTE);
-		preparedStatement.setLong(1, attributeId);
-		preparedStatement.executeUpdate();
+		try (final var preparedStatement = connection.prepareStatement(DELETE_ATTRIBUTE)) {
+			preparedStatement.setLong(1, attributeId);
+			preparedStatement.executeUpdate();
+		}
 	}
 	
 	/* (non-Javadoc)
