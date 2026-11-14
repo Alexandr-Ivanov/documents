@@ -27,7 +27,8 @@ public class ConsoleMain {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws SQLException, IOException {
-        DocumentsDomain domain = new DocumentsDomainImpl("Documents");
+		String dbPath = System.getProperty("db.path");
+        DocumentsDomain domain = new DocumentsDomainImpl((null != dbPath ? dbPath : "") + "Documents");
 		CommandProcessor commandProcessor = new CommandProcessor(domain);
 		
 		if (commandProcessor.process(args)) {

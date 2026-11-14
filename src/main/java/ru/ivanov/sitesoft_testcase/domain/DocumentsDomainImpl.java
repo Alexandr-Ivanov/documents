@@ -26,7 +26,7 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	public static final String SELECT_DOCUMENTS = "SELECT id, name, type FROM documents ORDER BY id ASC;";
 
 	public DocumentsDomainImpl(String databaseName) throws SQLException {
-		connection = DriverManager.getConnection("jdbc:sqlite:/var/db/" + databaseName);
+		connection = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
 	}
 	
 	/* (non-Javadoc)
