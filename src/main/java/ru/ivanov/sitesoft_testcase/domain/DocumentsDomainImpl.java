@@ -22,7 +22,23 @@ import org.sqlite.SQLiteException;
  */
 public class DocumentsDomainImpl implements DocumentsDomain {
 
-	public static final String SELECT_DOCUMENTS = "SELECT id, name, type FROM documents ORDER BY id ASC;";
+	private static final String SELECT_DOCUMENTS = "SELECT id, name, type FROM documents ORDER BY id ASC;";
+	private static final String INSERT_INTO_DOCUMENTS = "INSERT INTO documents (name,type) VALUES (?,?);";
+	private static final String UPDATE_DOCUMENT_CONTENT = "UPDATE documents SET content=? WHERE id=?";
+	private static final String GET_ATTRIBUTES_FOR_DOCUMENT = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes where documentId=?";
+	private static final String GET_DOCUMENT_CONTENT = "SELECT content FROM documents WHERE id=?;";
+	private static final String INSERT_DOCUMENT_ATTRIBUTE = "INSERT INTO documentAttributes (documentId,name,type,stringValue,integerValue) VALUES (?,?,?,?,?);";
+	private static final String GET_DOCUMENT_ATTRIBUTE_BY_ID = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes WHERE id=?;";
+	private static final String GET_DOCUMENT_BY_ID = "SELECT id, name, type FROM documents WHERE id=?;";
+	private static final String UPDATE_ATTRIBUTE = "UPDATE documentAttributes SET name=?,type=?,stringValue=?,integerValue=? WHERE id=?;";
+	private static final String DELETE_ATTRIBUTE = "DELETE FROM documentAttributes WHERE id=?;";
+	private static final String DELETE_ATTRIBUTES_FOR_DOCUMENT = "DELETE FROM documentAttributes WHERE documentId=?;";
+	private static final String DELETE_DOCUMENT = "DELETE FROM documents WHERE id=?;";
+	private static final String DROP_TABLE_DOCUMENTS = "DROP TABLE 'documents';";
+	private static final String DROP_TABLE_DOCUMENT_ATTRIBUTES = "DROP TABLE 'documentAttributes';";
+	private static final String CREATE_TABLE_DOCUMENTS = "CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);";
+	private static final String CREATE_TABLE_DOCUMENT_ATTRIBUTES = "CREATE TABLE 'documentAttributes' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'documentId' INTEGER NOT NULL, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'stringValue' TEXT, 'integerValue' INTEGER);";
+
 	private final String databaseUrl;
 
 	public DocumentsDomainImpl(String databaseName) {
@@ -99,21 +115,21 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 		try (var connection = DriverManager.getConnection(databaseUrl);
 			 var statement = connection.createStatement()) {
 			try {
-				statement.execute("DROP TABLE 'documents';");
+				statement.execute(DROP_TABLE_DOCUMENTS);
 			} catch (SQLiteException e) {
 				// if no such table exists
 				System.out.println("Warning: " + e.getMessage());
 			}
 
 			try {
-				statement.execute("DROP TABLE 'documentAttributes';");
+				statement.execute(DROP_TABLE_DOCUMENT_ATTRIBUTES);
 			} catch (SQLiteException e) {
 				// if no such table exists
 				System.out.println("Warning: " + e.getMessage());
 			}
 
-			statement.execute("CREATE TABLE 'documents' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'content' BLOB);");
-			statement.execute("CREATE TABLE 'documentAttributes' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'documentId' INTEGER NOT NULL, 'name' TEXT NOT NULL, 'type' CHAR(50) NOT NULL, 'stringValue' TEXT, 'integerValue' INTEGER);");
+			statement.execute(CREATE_TABLE_DOCUMENTS);
+			statement.execute(CREATE_TABLE_DOCUMENT_ATTRIBUTES);
 		}
 	}
 
@@ -231,11 +247,11 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 	public List<Document> getDocumentsList() throws SQLException {
 		try (var connection = DriverManager.getConnection(databaseUrl);
 			 var statement = connection.createStatement()) {
-			List<Document> result = new ArrayList<>();
-			final ResultSet resultSet = statement.executeQuery(SELECT_DOCUMENTS);
+			var result = new ArrayList<Document>();
+			final var resultSet = statement.executeQuery(SELECT_DOCUMENTS);
 
 			while (resultSet.next()) {
-				Document document = getDocument(resultSet);
+				var document = getDocument(resultSet);
 				result.add(document);
 			}
 
@@ -369,16 +385,4 @@ public class DocumentsDomainImpl implements DocumentsDomain {
 			connection.commit();
 		}
 	}
-	
-	private static final String INSERT_INTO_DOCUMENTS = "INSERT INTO documents (name,type) VALUES (?,?);";
-	private static final String UPDATE_DOCUMENT_CONTENT = "UPDATE documents SET content=? WHERE id=?";
-	private static final String GET_ATTRIBUTES_FOR_DOCUMENT = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes where documentId=?";
-	private static final String GET_DOCUMENT_CONTENT = "SELECT content FROM documents WHERE id=?;";
-	private static final String INSERT_DOCUMENT_ATTRIBUTE = "INSERT INTO documentAttributes (documentId,name,type,stringValue,integerValue) VALUES (?,?,?,?,?);";
-	private static final String GET_DOCUMENT_ATTRIBUTE_BY_ID = "SELECT id,documentId,name,type,stringValue,integerValue FROM documentAttributes WHERE id=?;";
-	private static final String GET_DOCUMENT_BY_ID = "SELECT id, name, type FROM documents WHERE id=?;";
-	private static final String UPDATE_ATTRIBUTE = "UPDATE documentAttributes SET name=?,type=?,stringValue=?,integerValue=? WHERE id=?;";
-	private static final String DELETE_ATTRIBUTE = "DELETE FROM documentAttributes WHERE id=?;";
-	private static final String DELETE_ATTRIBUTES_FOR_DOCUMENT = "DELETE FROM documentAttributes WHERE documentId=?;";
-	private static final String DELETE_DOCUMENT = "DELETE FROM documents WHERE id=?;";
 }
