@@ -16,8 +16,6 @@ import java.util.List;
  */
 public interface DocumentsDomain {
 
-	void cleanup() throws SQLException;
-
 	/**
 	 * Добавить атрибут в базу
 	 * @param attribute
@@ -97,14 +95,6 @@ public interface DocumentsDomain {
 	 * @throws IOException
 	 */
 	void setDocumentContent(long documentId, InputStream inputStream) throws SQLException, IOException;
-
-	/**
-	 * Присвоить содержимое документу
-	 * @param documentId
-	 * @param bytes
-	 * @throws SQLException
-	 */
-	void setDocumentContent(long documentId, byte[] bytes) throws SQLException;
 
 	/**
 	 * Изменить атрибут в базе данных

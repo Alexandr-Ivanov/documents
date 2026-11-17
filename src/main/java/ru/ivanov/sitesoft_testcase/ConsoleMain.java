@@ -39,8 +39,6 @@ public class ConsoleMain {
 				command = readCommand();
 			}
 		}
-		
-		domain.cleanup();
 	}
 
 	/**

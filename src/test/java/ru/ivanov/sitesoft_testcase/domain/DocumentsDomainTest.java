@@ -6,7 +6,6 @@ package ru.ivanov.sitesoft_testcase.domain;
 import java.io.*;
 import java.sql.SQLException;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +21,6 @@ public class DocumentsDomainTest {
 	public void setup() throws SQLException {
 		domain = new DocumentsDomainImpl("test");
 		domain.createDatabase();		
-	}
-	
-	@After
-	public void teardown() throws SQLException {
-		domain.cleanup();
 	}
 	
 	@Test

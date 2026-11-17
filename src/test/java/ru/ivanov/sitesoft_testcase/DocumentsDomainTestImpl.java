@@ -25,15 +25,6 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 	public String calledMethod;
 
 	/* (non-Javadoc)
-	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#cleanup()
-	 */
-	@Override
-	public void cleanup() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
 	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#addAttribute(ru.ivanov.sitesoft_testcase.domain.DocumentAttribute)
 	 */
 	@Override
@@ -148,15 +139,6 @@ public class DocumentsDomainTestImpl implements DocumentsDomain {
 		}
 		
 		content = outputStream.toByteArray();
-	}
-
-	/* (non-Javadoc)
-	 * @see ru.ivanov.sitesoft_testcase.domain.DocumentsDomain#setDocumentContent(long, byte[])
-	 */
-	@Override
-	public void setDocumentContent(long documentId, byte[] bytes) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
